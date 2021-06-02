@@ -5,7 +5,7 @@ option go_package = "./;beanfun_chat_v1";
 
 import "google/protobuf/empty.proto";
 import "chat/chatEntities.proto";
-import "vote/vote_admin.proto";
+import "vote/vote_entities.proto";
 
 service SocketEventPublisherService {
     rpc PublishUserUpdateEvent(PublishUserUpdateEventCommand) returns (google.protobuf.Empty){}
