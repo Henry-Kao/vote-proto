@@ -1,0 +1,93 @@
+syntax = "proto3";
+
+package beanfun.chat.v1;
+option go_package = "./;beanfun_chat_v1";
+
+import "google/protobuf/empty.proto";
+import "chat/chatEntities.proto";
+import "vote/vote_admin.proto";
+
+service SocketEventPublisherService {
+    rpc PublishUserUpdateEvent(PublishUserUpdateEventCommand) returns (google.protobuf.Empty){}
+    rpc PublishFriendUpdateEvent(PublishFriendUpdateEventCommand) returns (google.protobuf.Empty){}
+    rpc PublishUserLogoutEvent(PublishUserLogoutEventCommand) returns (google.protobuf.Empty){}
+    rpc PublishAddVoteEventInChat(PublishAddVoteEventInChatCommand) returns (google.protobuf.Empty){}
+    rpc PublishUpdateVoteEventInChat(PublishUpdateVoteEventInChatCommand) returns (google.protobuf.Empty){}
+    rpc PublishRemoveVoteEventInChat(PublishRemoveVoteEventInChatCommand) returns (google.protobuf.Empty){}
+}
+
+message PublishUserUpdateEventCommand{
+    UserEventProfile user_event_profile = 1;
+}
+
+message PublishFriendUpdateEventCommand {
+    repeated FriendEventProfile friend_event_profile = 1;
+}
+
+message FriendEventProfile {
+    UserEventProfile user_event_profile = 1;
+    FriendStatus friend_status = 2;
+    FriendType friend_type = 3;
+    int64 recipient_id = 4 [jstype=JS_STRING];
+    int64 be_friend_time = 5 [jstype=JS_STRING];
+    int32 mutual_friend_count = 6;
+}
+
+message UserEventProfile {
+    int64 alias_id = 1 [jstype=JS_STRING];
+    string nickname = 2;
+    string avatar = 3;
+    string email = 4 [deprecated=true];
+    string hashed_phone = 5;
+    string phone_country_code = 6;
+    string hashed_email = 7;
+}
+
+message PublishUserLogoutEventCommand {
+    int64 alias_id = 1 [jstype=JS_STRING];
+    string new_token = 2;
+}
+
+message VoteEventMetadataByQuestionMode {
+    oneof metadata_oneof {
+        VoteEventVoteMetadata vote = 1;
+        VoteEventPKMetadata pk = 2;
+    }
+}
+
+message VoteEventVoteMetadata {
+    string title = 1;
+    string vote_uri = 2;
+    string action = 3;
+}
+
+message VoteEventPKMetadata {
+    string vote_title = 1;
+    string vote_uri = 2;
+    repeated PKOptionMetadata pk_option_meatadata = 3;
+}
+
+message PKOptionMetadata {
+    string option_id = 1;
+    string option_title = 2;
+    double voting_rate = 3;
+}
+
+message PublishAddVoteEventInChatCommand {
+    int64 vote_id = 1 [jstype=JS_STRING];
+    int64 chat_id = 2 [jstype=JS_STRING];
+    beanfun.vote.v1.QuestionMode question_mode = 3;
+    VoteEventMetadataByQuestionMode vote_metadata = 4;
+}
+
+message PublishUpdateVoteEventInChatCommand {
+    int64 vote_id = 1 [jstype=JS_STRING];
+    int64 chat_id = 2 [jstype=JS_STRING];
+    beanfun.vote.v1.QuestionMode question_mode = 3;
+    VoteEventMetadataByQuestionMode vote_metadata = 4;
+}
+
+message PublishRemoveVoteEventInChatCommand {
+    int64 vote_id = 1 [jstype=JS_STRING];
+    int64 chat_id = 2 [jstype=JS_STRING];
+}

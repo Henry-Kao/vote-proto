@@ -1,0 +1,51 @@
+syntax = "proto3";
+
+package beanfun.vote.v1;                  //package name
+option go_package = "./;beanfun_vote_v1"; //package 位置
+
+// Message Type-泛用回傳訊息格式
+message MessageResult {
+  string msg = 1;
+}
+
+// [table] question
+message Question {
+    int32 question_id = 1;           // 題目編號(後端產生)
+    string title = 2;                // 題目內容 (聊天室: subject.title == question.title; 時事評論家: question.title)
+    QuestionMode mode = 3;           // 題目模式
+    QuestionType type = 4;           // 題目類型
+    bool is_multiple_vote = 5;       // 一人多票 (question.is_multiple_vote) (新增欄位 2021/05/14)
+    int32 sort_id = 6;               // 問題排序順序
+    repeated Option option_list = 7; // 陣列-repeated(陣列) Option(型別)
+  }
+
+// [table] option
+message Option {
+    int32 option_id = 1;             // 選項編號(後端產生)
+    string title = 2;                // 選項內容
+    string image_uri = 3;            // 選項圖片
+    int32 sort_id = 4;               // 選項排序
+    double voting_rate = 5;          // 得票率
+    bool is_voted = 6;               // 投票結果-使用者是否點選此選項
+}
+
+// subject.subject_type
+enum SubjectType {
+  SUBJECT_TYPE_UNKNOWN = 0;
+  SUBJECT_TYPE_CHATROOM = 1;         // 聊天室
+  SUBJECT_TYPE_REVIEWER = 2;         // 時事評論家
+}
+
+// question.question_mode
+enum QuestionMode {
+  QUESTION_MODE_UNKNOWN = 0;
+  QUESTION_MODE_PK = 1;              // PK模式
+  QUESTION_MODE_VOTE = 2;            // 一般模式
+}
+
+// question.question_type
+enum QuestionType {
+  QUESTION_TYPE_UNKNOWN = 0;
+  QUESTION_TYPE_TEXT = 1;            // 文字投票
+  QUESTION_TYPE_IMAGE = 2;           // 梗圖投票
+}

@@ -1,0 +1,238 @@
+syntax = "proto3";
+
+package beanfun.chat.v1;
+option go_package = "./;beanfun_chat_v1";
+
+import "chatEntities.proto";
+
+// login packet
+message LoginPacket {
+    string token = 1;
+    string device = 2;
+    string user_agent = 3;
+}
+
+message LoginAck {
+    oneof ack_oneof {
+        string session_id = 1;
+        SocketError socket_error = 2;
+    }
+}
+
+// init packet
+message InitAck {
+    bool system_unavailable = 1;
+    string unavailable_hint = 2;
+    int64 chats_last_updated = 4 [jstype=JS_STRING];
+    int64 users_last_updated = 5 [jstype=JS_STRING];
+    int64 user_subscriptions_last_updated = 7 [jstype=JS_STRING];
+    int64 missions_last_updated = 8 [jstype=JS_STRING, deprecated=true];
+    int64 promotions_last_updated = 9 [jstype=JS_STRING, deprecated=true];
+    int64 notifications_last_updated = 10 [jstype=JS_STRING];
+    int64 asset_point_last_updated = 11 [jstype=JS_STRING];
+    int64 asset_treasure_last_updated = 12 [jstype=JS_STRING];
+    int64 asset_box_last_updated = 13 [jstype=JS_STRING];
+    int64 asset_bonus_last_updated = 14 [jstype=JS_STRING];
+    int64 asset_ticket_last_updated = 15 [jstype=JS_STRING];
+    int64 asset_card_last_updated = 16 [jstype=JS_STRING];
+    int64 jollybuy_last_updated = 17 [jstype=JS_STRING];
+    int64 asset_trade_center_last_updated = 18 [jstype=JS_STRING];
+    int64 asset_trade_center_history_last_updated = 19 [jstype=JS_STRING];
+}
+
+// send message packet
+message SendMessagePacket {
+    MimeType mime_type = 1;
+    int64 chat_id = 2 [jstype=JS_STRING];
+    string content = 3;
+    MimeTypeMetadata metadata = 5;
+    int64 sender_id = 6 [jstype=JS_STRING];
+    ReplyMessage reply_message = 7;
+    int32 ttl = 8;
+    string request_id = 9;
+    int64 expired_time = 10 [jstype=JS_STRING];
+}
+
+message SendMessageAck {
+    oneof ack_oneof {
+        ChatMessage message = 1;
+        SocketError socket_error = 2;
+    }
+}
+
+message ScheduleMessagePacket {
+    int64 chat_id = 1 [jstype=JS_STRING];
+    int64 sender_id = 2 [jstype=JS_STRING];
+    RawMessage raw_message = 3;
+    ReplyMessage reply_message = 4;
+    int64 request_id = 5 [jstype=JS_STRING];
+    int64 schedule_time = 6 [jstype=JS_STRING];
+}
+
+message ScheduleMessageAck {
+    int32 schedule_id = 1;
+    SocketError socket_error = 2;
+}
+
+message ForwardMessagesPacket {
+    repeated int64 chat_ids = 1 [jstype=JS_STRING];
+    repeated int64 sender_ids = 2 [jstype=JS_STRING];
+    repeated RawMessage raw_messages = 3;
+}
+
+message ForwardMessagesAck {
+    repeated ChatMessage messages = 1;
+    repeated int64 failed_chat_ids = 2 [jstype=JS_STRING];
+    SocketError socket_error = 3;
+}
+
+message SendMessageV2Packet {
+    int64 chat_id = 1 [jstype=JS_STRING];
+    int64 sender_id = 2 [jstype=JS_STRING];
+    RawMessage raw_message = 3;
+    ReplyMessage reply_message = 4;
+    int64 request_id = 5 [jstype=JS_STRING];
+}
+
+// enter chat packet
+message EnterChatPacket {
+    int64 chat_id = 1 [jstype=JS_STRING];
+    int64 last_message_id = 2 [jstype=JS_STRING];
+    int64 user_id = 3 [jstype=JS_STRING];
+}
+
+message EnterChatAck {
+    repeated ChatMessage messages = 1;
+    int64 pins_last_updated = 2 [jstype=JS_STRING];
+    int64 chats_last_updated = 3 [jstype=JS_STRING];
+    repeated int64 updated_message_ids = 4 [jstype=JS_STRING];
+    int64 others_last_read = 5 [jstype=JS_STRING];
+    int64 self_last_read = 6 [jstype=JS_STRING];
+    int64 unread_mention_message_id = 7 [jstype=JS_STRING];
+    bool has_next = 8;
+    SocketError socket_error = 9;
+}
+
+// leave chat packet
+message LeaveChatPacket {
+    int64 chat_id = 1 [jstype=JS_STRING];
+    int64 user_id = 2 [jstype=JS_STRING];
+}
+
+message LeaveChatAck {
+    repeated ChatMessage messages = 1;
+    SocketError socket_error = 2;
+}
+
+// history messages packet
+message HistoryMessagesPacket {
+    int64 chat_id = 1 [jstype=JS_STRING];
+    int64 message_id = 2 [jstype=JS_STRING];
+    int64 user_id = 3 [jstype=JS_STRING];
+}
+
+message HistoryMessagesAck {
+    repeated ChatMessage messages = 1;
+    SocketError socket_error = 2;
+}
+
+// next messages packet
+message NextMessagesPacket {
+    int64 chat_id = 1 [jstype=JS_STRING];
+    int64 message_id = 2 [jstype=JS_STRING];
+    int64 user_id = 3 [jstype=JS_STRING];
+}
+
+message NextMessagesAck {
+    repeated ChatMessage messages = 1;
+    SocketError socket_error = 2;
+}
+
+// around messages packet
+message AroundMessagesPacket {
+    int64 chat_id = 1 [jstype=JS_STRING];
+    int64 message_id = 2 [jstype=JS_STRING];
+    int64 user_id = 3 [jstype=JS_STRING];
+}
+
+message AroundMessagesAck {
+    repeated ChatMessage messages = 1;
+    SocketError socket_error = 2;
+}
+
+// newest messages packet
+message NewestMessagesPacket {
+    int64 chat_id = 1 [jstype=JS_STRING];
+    int64 user_id = 2 [jstype=JS_STRING];
+}
+
+message NewestMessagesAck {
+    repeated ChatMessage messages = 1;
+    SocketError socket_error = 2;
+}
+
+// recall message packet
+message RecallMessagePacket {
+    int64 chat_id = 1 [jstype=JS_STRING];
+    int64 message_id = 2 [jstype=JS_STRING];
+    int64 recaller_id = 3 [jstype=JS_STRING];
+}
+
+message RecallMessageAck {
+    ChatMessage recalled_message = 1;
+    SocketError socket_error = 2;
+}
+
+// receive message packet
+message FailedMessage {
+    int64 message_id = 1 [jstype=JS_STRING];
+    string reason = 2;
+}
+
+message ReceiveMessagePacket {
+    repeated ChatMessage messages = 1;
+    bool has_unread = 2;
+}
+
+message ReceiveMessageAck {
+    int64 last_message_id = 1 [jstype=JS_STRING];
+    repeated FailedMessage failed_messages = 2;
+}
+
+// read packet
+message Read {
+    int64 chat_id = 1 [jstype=JS_STRING];
+    int64 message_id = 2 [jstype=JS_STRING];
+    int64 sender_id = 3 [jstype=JS_STRING];
+}
+
+message SendReadPacket {
+    repeated Read reads = 1;
+}
+
+message SendReadAck {
+    SocketError socket_error = 1;
+}
+
+message ReceiveReadPacket {
+    Read read = 3;
+}
+
+// typing packet
+message TypingPacket {
+    int64 sender_id = 1 [jstype=JS_STRING];
+    string avatar = 2;
+    int64 chat_id = 3 [jstype=JS_STRING];
+}
+
+// definition of socket error
+message SocketError {
+    int32 code = 1;
+    string message = 2;
+}
+
+// new token update event
+message NewTokenPacket {
+    int64 alias_id = 1;
+    string new_token = 2;
+}

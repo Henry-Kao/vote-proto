@@ -1,0 +1,1392 @@
+syntax = "proto3";
+
+package beanfun.chat.v1;
+option go_package = "./;beanfun_chat_v1";
+
+import "google/protobuf/empty.proto";
+import "google/protobuf/wrappers.proto";
+import "chatEntities.proto";
+import "period_chat.proto";
+
+service MessageService {
+    rpc SendMessage(SendMessageCommand) returns (SendMessageResult) {}
+    rpc BatchSendMessages(BatchSendMessagesCommand) returns (BatchSendMessagesResult) {}
+    rpc GetUnreadMessages(GetUnreadMessagesCommand) returns (GetUnreadMessagesResult) {}
+    rpc GetHistoryMessages(GetHistoryMessageCommand) returns (GetHistoryMessagesResult) {}
+    rpc GetAroundMessages(GetAroundMessagesCommand) returns (GetAroundMessagesResult) {}
+    rpc GetNewestMessages(GetNewestMessagesCommand) returns (GetNewestMessagesResult) {}
+    rpc RecallMessage(RecallMessageCommand) returns (RecallMessageResult) {}
+    rpc DeleteMessages(DeleteMessagesCommand) returns (google.protobuf.Empty) {}
+    rpc SendScheduleMessage(SendScheduleMessageCommand) returns (SendScheduleMessageResult) {}
+    rpc GetScheduleMessages(GetScheduleMessagesCommand) returns (GetScheduleMessagesResult) {}
+    rpc DeleteScheduleMessage(DeleteScheduleMessageCommand) returns (google.protobuf.Empty) {}
+    rpc GetEarliestUnreadMentionMessage(GetEarliestUnreadMentionMessageCommand) returns (GetEarliestUnreadMentionMessageResult) {}
+    rpc UpdateMessageMetadata(UpdateMessageMetadataCommand) returns (google.protobuf.Empty) {}
+    rpc UnlockWhisperMessages(UnlockWhisperMessagesCommand) returns (UnlockWhisperMessagesResult) {}
+    rpc GetUserSendMsgCountDuringActivity(GetUserSendMsgCountDuringActivityCommand) returns (GetUserSendMsgCountDuringActivityResult) {}
+}
+
+service ReadService {
+    rpc ReadNewestMessage(ReadNewestMessageCommand) returns (ReadNewestMessageResult) {}
+    rpc ReadMessage(ReadMessageCommand) returns (google.protobuf.Empty) {}
+}
+
+service AlbumService {
+    rpc CreateChatAlbum(CreateChatAlbumCommand) returns (CreateChatAlbumResult) {}
+    rpc GetChatAlbums(GetChatAlbumsCommand) returns (GetChatAlbumsResult) {}
+    rpc UploadPhotos(UploadPhotosCommand) returns (UploadPhotosResult) {}
+    rpc UpdateAlbumName(UpdateAlbumNameCommand) returns (google.protobuf.Empty) {}
+    rpc DeleteAlbum(DeleteAlbumCommand) returns (google.protobuf.Empty) {}
+    rpc DeletePhotos(DeletePhotosCommand) returns (google.protobuf.Empty) {}
+    rpc GetChatAlbumPhotos(GetChatAlbumPhotosCommand) returns (GetChatAlbumPhotosResult) {}
+    rpc UpdateAlbumPhotoMetadata(UpdateAlbumPhotoMetadataCommand) returns (google.protobuf.Empty) {}
+}
+
+service ChatProfileService {
+    rpc GetMediaList(GetMediaListCommand) returns (GetMediaListResult) {}
+    rpc GetUserChatList(GetUserChatListCommand) returns (GetUserChatListResult) {}
+    rpc GetChatProfilesByIDsOrInviteLinks(GetChatProfilesByIDsOrInviteLinksCommand) returns (GetChatProfilesByIDsOrInviteLinksResult) {}
+    rpc GetChatProfilesByIDsOrInviteLinksV2(GetChatProfilesByIDsOrInviteLinksCommand) returns (GetChatProfilesByIDsOrInviteLinksResult) {}
+    rpc GetChatParticipants(GetChatParticipantsCommand) returns (GetChatParticipantsResult) {}
+    rpc GetChatParticipantsIDs(GetChatParticipantsIDsCommand) returns (GetChatParticipantsIDsResult) {}
+    rpc GetChatsByAnonymous(GetChatsByAnonymousCommand) returns (GetChatsByAnonymousResult) {}
+    rpc GetPublicChatsByTag(GetPublicChatsByTagCommand) returns (GetPublicChatsByTagResult) {}
+    rpc GetChatExtensions(GetChatExtensionsCommand) returns (GetChatExtensionsResult) {}
+}
+
+service PinnedMessageService {
+    rpc AddChatPinnedMessage(AddChatPinnedMessageCommand) returns (AddChatPinnedMessageResult) {}
+    rpc AddChatPinnedMessageV2(AddChatPinnedMessageV2Command) returns (AddChatPinnedMessageV2Result) {}
+    rpc DeleteChatPinnedMessage(DeleteChatPinnedMessageCommand) returns (google.protobuf.Empty) {}
+    rpc GetChatPinnedMessage(GetChatPinnedMessageCommand) returns (GetChatPinnedMessageResult) {}
+    rpc GetChatPinnedMessageV2(GetChatPinnedMessageCommand) returns (GetChatPinnedMessageV2Result) {}
+    rpc UnfollowPinnedMessage(UnfollowPinnedMessageCommand) returns (google.protobuf.Empty) {}
+}
+
+service VoteService {
+    rpc StartVoteInChat(StartVoteInChatCommand) returns (google.protobuf.Empty) {}
+    rpc EndVoteInChat(EndVoteInChatCommand) returns (google.protobuf.Empty) {}
+}
+
+service ChatStatusService {
+    rpc GetSnapshot(GetSnapshotCommand) returns(GetSnapshotResult) {}
+    rpc GetMainInfo(GetMainInfoCommand) returns (GetMainInfoResult) {}
+    rpc GetChatMainInfo(GetChatMainInfoCommand) returns (GetChatMainInfoResult) {}
+    rpc GetUserDiffChats(GetUserDiffChatsCommand) returns (GetUserDiffChatsResult) {}
+    rpc SocketEnterChat(SocketEnterChatCommand) returns (SocketEnterChatResult) {}
+    rpc SocketLeaveChat(SocketLeaveChatCommand) returns (SocketLeaveChatResult) {}
+}
+
+service ChatPreferenceService {
+    rpc AddChatParticipantsPin(AddChatParticipantsPinCommand) returns (google.protobuf.Empty) {}
+    rpc CancelChatParticipantsPin(CancelChatParticipantsPinCommand) returns (google.protobuf.Empty) {}
+    rpc AddChatParticipantsMute(AddChatParticipantsMuteCommand) returns (google.protobuf.Empty) {}
+    rpc CancelChatParticipantsMute(CancelChatParticipantsMuteCommand) returns (google.protobuf.Empty) {}
+    rpc AddChatParticipantsAdBlock(AddChatParticipantsAdBlockCommand) returns (google.protobuf.Empty) {}
+    rpc CancelChatParticipantsAdBlock(CancelChatParticipantsAdBlockCommand) returns (google.protobuf.Empty) {}
+    rpc HideChats(HideChatsCommand) returns (google.protobuf.Empty) {}
+    rpc DeleteChatsHistory(DeleteChatsHistoryCommand) returns (google.protobuf.Empty) {}
+    rpc AddChatParticipantsFavorite(AddChatParticipantsFavoriteCommand) returns (google.protobuf.Empty) {}
+    rpc RemoveChatParticipantsFavorite(RemoveChatParticipantsFavoriteCommand) returns (google.protobuf.Empty) {}
+}
+
+service ChatManagementService {
+    rpc UpdateChatParticipantsRole(UpdateChatParticipantsRoleCommand) returns (google.protobuf.Empty) {}
+    rpc LeaveChat(LeaveChatCommand) returns (google.protobuf.Empty) {}
+    rpc KickOutChatParticipant(KickOutChatParticipantCommand) returns (google.protobuf.Empty) {}
+    rpc CleanChatsByDeletedAliasID(CleanChatsByDeletedAliasIDCommand) returns (google.protobuf.Empty) {}
+    rpc AcceptChatApplications(AcceptChatApplicationsCommand) returns (google.protobuf.Empty) {}
+    rpc RejectChatApplications(RejectChatApplicationsCommand) returns (google.protobuf.Empty) {}
+    rpc GetChatApplicants(GetChatApplicantsCommand) returns (GetChatApplicantsResult) {}
+    rpc DismissChat(DismissChatCommand) returns (google.protobuf.Empty) {}
+    rpc AcceptInvitation(AcceptInvitationCommand) returns (google.protobuf.Empty) {}
+    rpc RejectInvitation(RejectInvitationCommand) returns (google.protobuf.Empty) {}
+    rpc InviteChat(InviteChatCommand) returns (google.protobuf.Empty) {}
+}
+
+service GroupService {
+    rpc CreateGroupChat(CreateGroupChatCommand) returns (CreateGroupChatResult) {}
+    rpc UpdateGroupChat(UpdateGroupChatCommand) returns (google.protobuf.Empty) {}
+    rpc ApplyGroupChat(ApplyGroupChatCommand) returns (google.protobuf.Empty) {}
+}
+
+service FunChatService {
+    rpc CreateFunChat(CreateFunChatCommand) returns (CreateFunChatResult) {}
+    rpc UpdateFunChat(UpdateFunChatCommand) returns (google.protobuf.Empty) {}
+    rpc ApplyFunChat(ApplyFunChatCommand) returns (ApplyFunChatResult) {}
+    rpc GetChatSuspects(GetChatSuspectsCommand) returns (GetChatSuspectsResult) {}
+    rpc GetChatSuspectReports(GetChatSuspectReportsCommand) returns (GetChatSuspectReportsResult) {}
+    rpc AddChatSuspects(AddChatSuspectsCommand) returns (google.protobuf.Empty) {}
+    rpc JudgeChatSuspects(JudgeChatSuspectsCommand) returns (google.protobuf.Empty) {}
+    rpc GetChatBlacklist(GetChatBlacklistCommand) returns (GetChatBlacklistResult) {}
+    rpc InsertChatBlacklist(InsertChatBlacklistCommand) returns (google.protobuf.Empty) {}
+    rpc DeleteChatBlacklist(DeleteChatBlacklistCommand) returns (google.protobuf.Empty) {}
+    rpc GetNearbyFunChats(GetNearbyFunChatsCommand) returns (GetNearbyFunChatsResult) {}
+    rpc GetFunChatsTags(google.protobuf.Empty) returns (GetFunChatsTagsResult) {}
+    rpc UpdateFunChatsTags(UpdateFunChatsTagsCommand) returns (google.protobuf.Empty) {}
+    rpc GetExhibitionTags(google.protobuf.Empty) returns (GetExhibitionTagsResult) {}
+    rpc GetAttachableTags(google.protobuf.Empty) returns (GetAttachableTagsResult) {}
+    rpc GetFunChatsByTag(GetFunChatsByTagCommand) returns (GetFunChatsByTagResult) {}
+    rpc AddFunChatBlockStatus(AddFunChatBlockStatusCommand) returns (google.protobuf.Empty) {}
+    rpc DeleteFunChatBlockStatus(DeleteFunChatBlockStatusCommand) returns (google.protobuf.Empty) {}
+    rpc GetFunChatsToBackend(GetFunChatsToBackendCommand) returns (GetFunChatsToBackendResult) {}
+    rpc GetFunChatsByCurators(GetFunChatsByCuratorsCommand) returns (GetFunChatsByCuratorsResult) {}
+    rpc AddFunChatCurator(AddFunChatCuratorCommand) returns (google.protobuf.Empty) {}
+    rpc GetFunChatHomePage(GetFunChatHomePageCommand) returns (GetFunChatHomePageResult) {}
+    rpc GetFunChatsByCreatedTime(GetFunChatsByCreatedTimeCommand) returns (GetFunChatsByCreatedTimeResult) {}
+    rpc GetFunChatParticipantByUserIDAndChatIDs(GetFunChatParticipantByUserIDAndChatIDsCommand) returns (GetFunChatParticipantByUserIDAndChatIDsResult){}
+    rpc AddTag(AddTagCommand) returns (AddTagResult) {}
+    rpc GetTags(GetTagsCommand) returns (GetTagsResult) {}
+    rpc UpdateTag(UpdateTagCommand) returns (google.protobuf.Empty) {}
+    rpc UpdateTagsSeq(UpdateTagsSeqCommand) returns (google.protobuf.Empty) {}
+    rpc DeleteTag(DeleteTagCommand) returns (google.protobuf.Empty) {}
+}
+
+service AssistantService {
+    rpc CreateAssistantChat(CreateAssistantChatCommand) returns (CreateAssistantChatResult) {}
+    rpc BatchCreateAssistantChat(BatchCreateAssistantChatCommand) returns (BatchCreateAssistantChatResult) {}
+    rpc DismissAssistantChat(DismissAssistantChatCommand) returns (DismissAssistantChatResult) {}
+}
+
+service PairService {
+    rpc CreatePairChat(CreatePairChatCommand) returns (google.protobuf.Empty) {}
+    rpc CreatePairChatV2(CreatePairChatCommand) returns (google.protobuf.Empty) {}
+}
+
+service GameService {
+    rpc CreateGameChat(CreateGameChatCommand) returns (CreateGameChatResult) {}
+    rpc UpdateGameChat(UpdateGameChatCommand) returns (google.protobuf.Empty) {}
+    rpc AddGameChatParticipants(AddGameChatParticipantsCommand) returns (google.protobuf.Empty) {}
+}
+
+service NotificationService {
+    rpc SendNotification(SendNotificationCommand) returns (google.protobuf.Empty) {}
+    rpc SendJollyBuyNotification(SendJollyBuyNotificationCommand) returns (google.protobuf.Empty) {}
+    rpc GetNotifications(GetNotificationsCommand) returns (GetNotificationsResult) {}
+}
+
+service HomePageService {
+    rpc GetHomePage(GetHomePageCommand) returns (GetHomePageResult) {}
+}
+
+message SendMessageCommand {
+    int64 chat_id = 1 [jstype=JS_STRING];
+    int64 sender_id = 2 [jstype=JS_STRING];
+    RawMessage raw_message = 3;
+    ReplyMessage reply_message = 4;
+    string device = 5;
+    string session_id = 6;
+}
+
+message SendMessageResult {
+    ChatMessage message = 1;
+}
+
+message BatchSendMessagesCommand {
+    repeated DemandMessage messages = 1;
+    string device = 2;
+    string session_id = 3;
+    bool skip_invalid_chat_id = 4;
+}
+
+message BatchSendMessagesResult {
+    repeated ChatMessage messages = 1;
+    repeated int64 failed_chat_ids = 2 [jstype=JS_STRING];
+}
+
+message GetUnreadMessagesCommand {
+    int64 chat_id = 1 [jstype=JS_STRING];
+    int64 started_message_id = 2 [jstype=JS_STRING];
+    int64 user_id = 3 [jstype=JS_STRING];
+}
+
+message GetUnreadMessagesResult {
+    repeated ChatMessage messages = 1;
+    bool has_unread = 2;
+}
+
+message GetNewestMessagesCommand {
+    int64 chat_id = 1 [jstype=JS_STRING];
+    int64 user_id = 2 [jstype=JS_STRING];
+}
+
+message GetNewestMessagesResult {
+    repeated ChatMessage messages = 1;
+}
+
+message GetHistoryMessageCommand {
+    int64 chat_id = 1 [jstype=JS_STRING];
+    int64 started_message_id = 2 [jstype=JS_STRING];
+    int64 user_id = 3 [jstype=JS_STRING];
+}
+
+message GetHistoryMessagesResult {
+    repeated ChatMessage messages = 1;
+}
+
+message GetAroundMessagesCommand {
+    int64 chat_id = 1 [jstype=JS_STRING];
+    int64 message_id = 2 [jstype=JS_STRING];
+    int64 user_id = 3 [jstype=JS_STRING];
+}
+
+message GetAroundMessagesResult {
+    repeated ChatMessage messages = 1;
+    repeated int64 updated_message_ids = 2 [jstype=JS_STRING];
+    bool has_next = 3;
+}
+
+message GetSnapshotCommand {
+    int64 user_id = 1 [jstype=JS_STRING];
+}
+
+message GetSnapshotResult {
+    Snapshot snapshot = 1;
+    int64 updated_time = 2 [jstype=JS_STRING];
+}
+
+message GetMainInfoCommand {
+    int64 alias_id = 1 [jstype=JS_STRING];
+}
+
+message GetMainInfoResult {
+    int64 chats_last_updated = 2 [jstype=JS_STRING];
+    int64 users_last_updated = 3 [jstype=JS_STRING];
+    int64 user_subscriptions_last_updated = 5 [jstype=JS_STRING];
+    int64 missions_last_updated = 6 [jstype=JS_STRING, deprecated=true];
+    int64 promotions_last_updated = 7 [jstype=JS_STRING, deprecated=true];
+    int64 notifications_last_updated = 8 [jstype=JS_STRING];
+    int64 asset_point_last_updated = 9 [jstype=JS_STRING];
+    int64 asset_treasure_last_updated = 10 [jstype=JS_STRING];
+    int64 asset_box_last_updated = 11 [jstype=JS_STRING];
+    int64 asset_bonus_last_updated = 12 [jstype=JS_STRING];
+    int64 asset_ticket_last_updated = 13 [jstype=JS_STRING];
+    int64 asset_card_last_updated = 14 [jstype=JS_STRING];
+    int64 jollybuy_last_updated = 15 [jstype=JS_STRING];
+    int64 asset_trade_center_last_updated = 16 [jstype=JS_STRING];
+    int64 asset_trade_center_history_last_updated = 17 [jstype=JS_STRING];
+}
+
+message ReadNewestMessageCommand {
+    int64 user_id = 1 [jstype=JS_STRING];
+    int64 chat_id = 2 [jstype=JS_STRING];
+}
+
+message ReadNewestMessageResult {
+    int64 read_id = 1 [jstype=JS_STRING];
+}
+
+message ReadMessageCommand {
+    int64 message_id = 1 [jstype=JS_STRING];
+    int64 chat_id = 2 [jstype=JS_STRING];
+    int64 user_id = 3 [jstype=JS_STRING];
+}
+
+message RecallMessageCommand {
+    int64 chat_id = 1 [jstype=JS_STRING];
+    int64 message_id = 2 [jstype=JS_STRING];
+    int64 alias_id = 3 [jstype=JS_STRING];
+}
+
+message RecallMessageResult {
+    ChatMessage message = 1;
+}
+
+message DeleteMessageCommand {
+    int64 chat_id = 1 [jstype=JS_STRING];
+    int64 message_id = 2 [jstype=JS_STRING];
+    int64 user_id = 3 [jstype=JS_STRING];
+}
+
+message DeleteMessagesCommand {
+    int64 chat_id = 1 [jstype=JS_STRING];
+    repeated int64 message_ids = 2 [jstype=JS_STRING];
+    int64 user_id = 3 [jstype=JS_STRING];
+}
+
+message GetEarliestUnreadMentionMessageCommand {
+    int64 alias_id = 1 [jstype=JS_STRING];
+    int64 chat_id = 2 [jstype=JS_STRING];
+}
+
+message GetEarliestUnreadMentionMessageResult {
+    int64 message_id = 1 [jstype=JS_STRING];
+}
+
+message GetMediaListCommand {
+    int64 chat_id = 1 [jstype=JS_STRING];
+    int64 user_id = 2 [jstype=JS_STRING];
+}
+
+message GetMediaListResult {
+    repeated Media medias = 1;
+}
+
+message GetChatMainInfoCommand {
+    int64 chat_id = 1 [jstype=JS_STRING];
+    int64 alias_id = 2 [jstype=JS_STRING];
+}
+
+message GetChatMainInfoResult {
+    int64 pins_last_updated = 1 [jstype=JS_STRING];
+    int64 chats_last_updated = 2 [jstype=JS_STRING];
+    int64 others_last_read = 3 [jstype=JS_STRING];
+    int64 self_last_read = 4 [jstype=JS_STRING];
+    bool is_blocking = 5;
+}
+
+message GetUserChatListCommand {
+    int64 user_id = 1 [jstype=JS_STRING];
+    repeated int64 chat_ids = 2 [jstype=JS_STRING];
+}
+
+message GetUserChatListResult {
+    repeated UserChat chats = 1;
+}
+
+message GetChatProfilesByIDsOrInviteLinksCommand {
+    repeated int64 chat_ids = 1 [jstype=JS_STRING];
+    repeated string invite_links = 2;
+    int64 real_alias_id = 3 [jstype=JS_STRING];
+}
+
+message GetChatProfilesByIDsOrInviteLinksResult {
+    repeated ChatProfile chats = 1;
+}
+
+message AddChatPinnedMessageCommand {
+    int64 alias_id = 1 [jstype=JS_STRING];
+    int64 chat_id = 2 [jstype=JS_STRING];
+    int64 message_id = 3 [jstype=JS_STRING];
+}
+
+message AddChatPinnedMessageResult {
+    int64 created_time = 1 [jstype=JS_STRING];
+}
+
+message AddChatPinnedMessageV2Command {
+    int64 alias_id = 1 [jstype=JS_STRING];
+    int64 chat_id = 2 [jstype=JS_STRING];
+    int64 message_id = 3 [jstype=JS_STRING];
+}
+
+message AddChatPinnedMessageV2Result {
+    int64 created_time = 1 [jstype=JS_STRING];
+}
+
+message DeleteChatPinnedMessageCommand {
+    int64 alias_id = 1 [jstype=JS_STRING];
+    int64 chat_id = 2 [jstype=JS_STRING];
+    int64 message_id = 3 [jstype=JS_STRING];
+}
+
+message GetChatPinnedMessageCommand {
+    int64 alias_id = 1 [jstype=JS_STRING];
+    int64 chat_id = 2 [jstype=JS_STRING];
+}
+
+message GetChatPinnedMessageResult {
+    repeated ChatPinnedMessage announcement = 1;
+    repeated ChatPinnedMessage activity = 2;
+    int64 modified_time = 3 [jstype=JS_STRING];
+}
+
+message ChatPinnedMessage {
+    int64 message_id = 1 [jstype=JS_STRING];
+    int64 message_sender_id = 2 [jstype=JS_STRING];
+    string message_content = 3;
+    repeated AliasInfo message_mentioned_users = 4;
+    int64 message_created_time = 5 [jstype=JS_STRING];
+    string metadata = 6;
+    MimeType mime_type = 7;
+    int64 created_time = 8 [jstype=JS_STRING];
+    int64 expired_time = 9 [jstype=JS_STRING];
+    int64 sender_id = 10 [jstype=JS_STRING];
+}
+
+message GetChatPinnedMessageV2Result {
+    repeated ChatPinnedMessageV2 pinned_messages = 1;
+    int64 modified_time = 2 [jstype=JS_STRING];
+}
+
+message ChatPinnedMessageV2 {
+    int64 created_time = 1 [jstype=JS_STRING];
+    int64 creator_id = 2 [jstype=JS_STRING];
+    MimeType mime_type = 3;
+    int64 message_id = 4 [jstype=JS_STRING];
+    int64 message_sender_id = 5 [jstype=JS_STRING];
+    string message_content = 6;
+    int64 message_created_time = 7 [jstype=JS_STRING];
+    string message_metadata = 8;
+    int64 message_expired_time = 9 [jstype=JS_STRING];
+}
+
+message AddChatParticipantsPinCommand {
+    int64 chat_id = 1 [jstype=JS_STRING];
+    int64 alias_id = 2 [jstype=JS_STRING];
+}
+
+message CancelChatParticipantsPinCommand {
+    int64 chat_id = 1 [jstype=JS_STRING];
+    int64 alias_id = 2 [jstype=JS_STRING];
+}
+
+message AddChatParticipantsMuteCommand {
+    int64 chat_id = 1 [jstype=JS_STRING];
+    int64 alias_id = 2 [jstype=JS_STRING];
+}
+
+message CancelChatParticipantsMuteCommand {
+    int64 chat_id = 1 [jstype=JS_STRING];
+    int64 alias_id = 2 [jstype=JS_STRING];
+}
+
+message AddChatParticipantsAdBlockCommand {
+    int64 chat_id = 1 [jstype=JS_STRING];
+    int64 alias_id = 2 [jstype=JS_STRING];
+}
+
+message CancelChatParticipantsAdBlockCommand {
+    int64 chat_id = 1 [jstype=JS_STRING];
+    int64 alias_id = 2 [jstype=JS_STRING];
+}
+
+message UpdateChatParticipantsRoleCommand {
+    int64 chat_id = 1 [jstype=JS_STRING];
+    int64 sender_id = 2 [jstype=JS_STRING];
+    repeated int64 moderators = 3 [jstype=JS_STRING];
+    repeated int64 normal_participants = 4 [jstype=JS_STRING];
+}
+
+message GetChatParticipantsCommand {
+    int64 chat_id = 1 [jstype=JS_STRING];
+    int64 alias_id = 2 [jstype=JS_STRING];
+    int32 next_participant_role = 3;
+    string keyword = 4;
+    int32 size = 5;
+    int64 next_participant_id = 6 [jstype=JS_STRING];
+}
+
+message GetChatParticipantsResult {
+    repeated UserBrief participants = 1;
+    int64 total = 2 [jstype=JS_STRING];
+    google.protobuf.Int32Value next_participant_role = 3;
+    StringableInt64Value next_participant_id = 4;
+}
+
+message HideChatsCommand {
+    repeated int64 chat_ids = 1 [jstype=JS_STRING];
+    repeated int64 alias_ids = 2 [jstype=JS_STRING];
+}
+
+message DeleteChatsHistoryCommand {
+    repeated int64 chat_ids = 1 [jstype=JS_STRING];
+    repeated int64 alias_ids = 2 [jstype=JS_STRING];
+}
+
+message LeaveChatCommand {
+    int64 chat_id = 1 [jstype=JS_STRING];
+    int64 alias_id = 2 [jstype=JS_STRING];
+    int64 successor_id = 3 [jstype=JS_STRING];
+}
+
+message KickOutChatParticipantCommand {
+    int64 chat_id = 1 [jstype=JS_STRING];
+    int64 alias_id = 2 [jstype=JS_STRING];
+    int64 kickedOut_id = 3 [jstype=JS_STRING];
+}
+
+message CleanChatsByDeletedAliasIDCommand {
+    int64 alias_id = 1 [jstype=JS_STRING];
+    string legacy_user_id = 2;
+}
+
+message CreateGroupChatCommand {
+    string subject = 1;
+    string description = 2;
+    string photo_uri = 3;
+    string cover_photo_uri = 4;
+    repeated int64 invitee_ids = 5 [jstype=JS_STRING];
+    int64 user_id = 6 [jstype=JS_STRING];
+}
+
+message CreateGroupChatResult {
+    UserChat user_chat = 1;
+}
+
+message UpdateGroupChatCommand {
+    string subject = 1;
+    string description = 2;
+    string photo_uri = 3;
+    string cover_photo_uri = 4;
+    int64 alias_id = 5 [jstype=JS_STRING];
+    int64 chat_id = 6 [jstype=JS_STRING];
+    google.protobuf.StringValue announce_content = 7;
+    google.protobuf.StringValue announce_uri = 8;
+    google.protobuf.StringValue stream_uri = 9;
+    google.protobuf.Int32Value stream_width = 10;
+    google.protobuf.Int32Value stream_height= 11;
+    ChatRole announce_permit = 12; // FIXME: it was deprecated, should use `pin_permit` instead
+    ChatRole invite_permit = 13;
+    ChatRole stream_permit = 14;
+    ChatRole judge_permit = 15;
+    ChatRole pin_permit = 16;
+}
+
+message CreateFunChatCommand {
+    string subject = 1;
+    string description = 2;
+    string photo_uri = 3;
+    string cover_photo_uri = 4;
+    int64 user_id = 5 [jstype=JS_STRING];
+    repeated int32 tags = 6;
+    google.protobuf.DoubleValue latitude = 7;
+    google.protobuf.DoubleValue longitude = 8;
+    bool restricted = 9;
+    google.protobuf.StringValue service_id = 10;
+    google.protobuf.Int32Value participants_limit = 11;
+}
+
+message CreateFunChatResult {
+    UserChat user_chat = 1;
+}
+
+message UpdateFunChatCommand {
+    google.protobuf.StringValue subject = 1;
+    google.protobuf.StringValue description = 2;
+    google.protobuf.StringValue photo_uri = 3;
+    google.protobuf.StringValue cover_photo_uri = 4;
+    int64 alias_id = 5 [jstype=JS_STRING];
+    int64 chat_id = 6 [jstype=JS_STRING];
+    repeated int32 tags = 7;
+    google.protobuf.DoubleValue latitude = 8;
+    google.protobuf.DoubleValue longitude = 9;
+    google.protobuf.BoolValue admin_approval = 10;
+    google.protobuf.BoolValue apply_questions = 11;
+    repeated string questions = 12;
+    google.protobuf.BoolValue see_history = 13;
+    google.protobuf.StringValue announce_content = 14;
+    google.protobuf.StringValue announce_uri = 15;
+    google.protobuf.StringValue stream_uri = 16;
+    google.protobuf.Int32Value stream_width = 17;
+    google.protobuf.Int32Value stream_height= 18;
+    ChatRole announce_permit = 19 [deprecated=true]; // FIXME: it was deprecated, should use `pin_permit` instead
+    ChatRole invite_permit = 20;
+    ChatRole stream_permit = 21;
+    ChatRole judge_permit = 22;
+    google.protobuf.BoolValue restricted = 23;
+    google.protobuf.Int32Value participants_limit = 24;
+    ChatRole pin_permit = 25 [deprecated=true];
+    google.protobuf.StringValue service_id = 26;
+}
+
+message CreateChatAlbumCommand {
+    int64 chat_id = 1 [jstype=JS_STRING];
+    int64 alias_id = 2 [jstype=JS_STRING];
+    string album_name = 3;
+}
+
+message CreateChatAlbumResult {
+    int32 id = 1;
+    int64 created_time = 2 [jstype=JS_STRING];
+}
+
+message GetChatAlbumsCommand {
+    int64 chat_id = 1 [jstype=JS_STRING];
+    int64 alias_id = 2 [jstype=JS_STRING];
+    repeated int32 photo_time_order_album_ids = 3;
+}
+
+message GetChatAlbumsResult {
+    repeated Album albums = 1;
+}
+
+message Album {
+    int32 id = 1;
+    string name = 2;
+    int64 creator_id = 3 [jstype=JS_STRING];
+    int64 created_time = 4 [jstype=JS_STRING];
+    int32 photo_count = 5;
+    repeated string thumbnails = 6;
+}
+
+message ApplyGroupChatCommand {
+    int64 chat_id = 1 [jstype=JS_STRING];
+    int64 alias_id = 2 [jstype=JS_STRING];
+}
+
+message ApplyFunChatCommand {
+    int64 chat_id = 1 [jstype=JS_STRING];
+    int64 alias_id = 2 [jstype=JS_STRING];
+    repeated QuestionsAnswers questions_answers = 3;
+    int64 real_alias_id = 4 [jstype=JS_STRING];
+}
+
+message QuestionsAnswers {
+    string question = 1;
+    string answer = 2;
+}
+
+message ApplyFunChatResult {
+    bool admin_approval = 1;
+}
+
+message AcceptChatApplicationsCommand {
+    int64 chat_id = 1 [jstype=JS_STRING];
+    int64 alias_id = 2 [jstype=JS_STRING];
+    repeated int64 applicantIDs = 3;
+    int64 real_alias_id = 4 [jstype=JS_STRING];
+}
+
+message RejectChatApplicationsCommand {
+    int64 chat_id = 1 [jstype=JS_STRING];
+    int64 alias_id = 2 [jstype=JS_STRING];
+    repeated int64 applicantIDs = 3;
+}
+
+message Media {
+    MimeType mime_type = 1;
+    int64 message_id = 2 [jstype=JS_STRING];
+    string content = 3;
+    string thumbnail_uri = 4;
+    int64 sender_id = 5 [jstype=JS_STRING];
+    int64 created_time = 6 [jstype=JS_STRING];
+    int32 width = 7;
+    int32 height = 8;
+    int32 duration = 9;
+    int64 size = 10 [jstype=JS_STRING];
+}
+
+message UploadPhotosCommand {
+    int64 chat_id = 1 [jstype=JS_STRING];
+    int64 alias_id = 2 [jstype=JS_STRING];
+    int32 album_id = 3;
+    repeated Photo photos = 4;
+}
+
+message Photo {
+    string url = 1;
+    int64 photo_time = 2 [jstype=JS_STRING];
+    string thumbnail = 3;
+    int64 size = 4 [jstype=JS_STRING];
+    int32 height = 5;
+    int32 width = 6;
+    MimeType mime_type = 7;
+}
+
+message UploadPhotosResult {
+     repeated UploadPhoto upload_photos = 1;
+}
+
+message UploadPhoto {
+    string url = 1;
+    int64 upload_time = 2 [jstype=JS_STRING];
+    int64 photo_id = 3 [jstype=JS_STRING];
+}
+
+message UpdateAlbumNameCommand {
+    int64 chat_id = 1 [jstype=JS_STRING];
+    int32 album_id = 2;
+    int64 alias_id = 3 [jstype=JS_STRING];
+    string name = 4;
+}
+
+message DeleteAlbumCommand {
+    int64 chat_id = 1 [jstype=JS_STRING];
+    int32 album_id = 2;
+    int64 alias_id = 3 [jstype=JS_STRING];
+}
+
+message DeletePhotosCommand {
+    int64 chat_id = 1 [jstype=JS_STRING];
+    repeated int64 photo_ids = 2;
+    int64 alias_id = 3 [jstype=JS_STRING];
+    int32 album_id = 4;
+}
+
+message GetChatAlbumPhotosCommand {
+    int64 chat_id = 1 [jstype=JS_STRING];
+    int32 album_id = 2;
+    int64 alias_id = 3 [jstype=JS_STRING];
+    PhotosOrderType photos_order_by = 4;
+}
+
+message GetChatAlbumPhotosResult {
+    repeated PhotoInfo photos = 1;
+}
+
+message PhotoInfo {
+    int64 photo_id = 1 [jstype=JS_STRING];
+    string url = 2;
+    string thumbnail = 3;
+    int64 size = 4 [jstype=JS_STRING];
+    int32 width = 5;
+    int32 height = 6;
+    int64 upload_time = 7 [jstype=JS_STRING];
+    int64 photo_time = 8 [jstype=JS_STRING];
+    MimeType mime_type = 9;
+    int64 creator_id = 10;
+}
+
+message CreateAssistantChatCommand {
+    int64 alias_id = 1 [jstype=JS_STRING];
+    int64 assistant_id = 2 [jstype=JS_STRING];
+    repeated RawMessage messages = 3;
+}
+
+message CreateAssistantChatResult {
+    string chat_ext_id = 1;
+    int64 chat_id = 2 [jstype=JS_STRING];
+}
+
+message BatchCreateAssistantChatCommand {
+    repeated int64 alias_ids = 1 [jstype=JS_STRING];
+    int64 assistant_id = 2 [jstype=JS_STRING];
+}
+
+message BatchCreateAssistantChatResult {
+    repeated AssistantChat assistant_chats = 1;
+}
+
+message AssistantChat {
+    int64 alias_id = 1 [jstype=JS_STRING];
+    string chat_ext_id = 2;
+    int64 chat_id = 3 [jstype=JS_STRING];
+}
+
+message GetChatParticipantsIDsCommand {
+    repeated int64 alias_ids = 1 [jstype=JS_STRING];
+}
+
+message GetChatParticipantsIDsResult {
+    repeated int64 participants_ids = 1 [jstype=JS_STRING];
+}
+
+message UnfollowPinnedMessageCommand {
+    int64 chat_id = 1 [jstype=JS_STRING];
+    int64 message_id = 2 [jstype=JS_STRING];
+    int64 alias_id = 3 [jstype=JS_STRING];
+}
+
+message CreatePairChatCommand {
+    int64 alias_id = 1 [jstype=JS_STRING];
+    repeated int64 friend_ids = 2;
+    string type = 3;
+}
+
+message GetUserDiffChatsCommand {
+    int64 alias_id = 1 [jstype=JS_STRING];
+    int64 last_modified_time = 2 [jstype=JS_STRING];
+}
+
+message GetUserDiffChatsResult {
+    repeated UserChat updated_chats = 1;
+    repeated int64 deleted_chat_ids = 2 [jstype=JS_STRING];
+}
+
+message GetChatApplicantsCommand {
+    int64 chat_id = 1 [jstype=JS_STRING];
+    int64 alias_id = 2 [jstype=JS_STRING];
+}
+
+message GetChatApplicantsResult {
+    repeated ChatApplicant applicants = 1;
+}
+
+message ChatApplicant {
+    int64 alias_id = 1 [jstype=JS_STRING];
+    string nickname = 2;
+    string avatar = 3;
+    repeated QuestionsAnswers questions_answers = 4;
+}
+
+message DismissChatCommand {
+    int64 chat_id = 1 [jstype=JS_STRING];
+    int64 alias_id = 2 [jstype=JS_STRING];
+}
+
+message GetChatSuspectsCommand {
+    int64 chat_id = 1 [jstype=JS_STRING];
+    int64 alias_id = 2 [jstype=JS_STRING];
+    int32 page = 3;
+}
+
+message GetChatSuspectsResult {
+    repeated UserBrief suspects = 1;
+}
+
+message GetChatSuspectReportsCommand {
+    int64 chat_id = 1 [jstype=JS_STRING];
+    int64 suspect_id = 2 [jstype=JS_STRING];
+    int64 alias_id = 3 [jstype=JS_STRING];
+    int32 page = 4;
+}
+
+message SuspectReport {
+    UserBrief reporter_brief = 1;
+    SuspectReasonType reason_type = 2;
+    string reason_content = 3;
+    int64 created_time = 4 [jstype=JS_STRING];
+    string message_content = 5;
+    int32 message_mime_type = 6;
+    string metadata = 7;
+    int64 message_time = 8 [jstype=JS_STRING];
+}
+
+message GetChatSuspectReportsResult {
+    repeated SuspectReport suspect_reports = 1;
+    bool is_suspect_in_chat = 2;
+}
+
+message AddChatSuspectsCommand {
+    int64 chat_id = 1 [jstype=JS_STRING];
+    int64 suspect_id = 2 [jstype=JS_STRING];
+    int64 alias_id = 3 [jstype=JS_STRING];
+    int64 message_id = 4 [jstype=JS_STRING];
+    SuspectReasonType reason_type = 5;
+    string reason_content = 6;
+}
+
+message JudgeChatSuspectsCommand {
+    int64 chat_id = 1 [jstype=JS_STRING];
+    int64 suspect_id = 2 [jstype=JS_STRING];
+    int32 result = 3;
+    int64 alias_id = 4 [jstype=JS_STRING];
+    string alias_token = 5; // # FIXME: only for migration used, must be removed after migration finished.
+}
+
+message GetChatBlacklistCommand {
+    int64 chat_id = 1 [jstype=JS_STRING];
+    int64 alias_id = 2 [jstype=JS_STRING];
+    int32 page = 3;
+}
+
+message GetChatBlacklistResult {
+    repeated UserBrief blacklist = 1;
+}
+
+message UserBrief {
+    int64 alias_id = 1 [jstype=JS_STRING];
+    string nickname = 2;
+    string avatar = 3;
+    string open_id = 4;
+    string customNickname = 5;
+}
+
+message InsertChatBlacklistCommand {
+    int64 chat_id = 1 [jstype=JS_STRING];
+    int64 alias_id = 2 [jstype=JS_STRING];
+    int64 blocker_id = 3 [jstype=JS_STRING];
+    string alias_token = 4; // # FIXME: only for migration used, must be removed after migration finished.
+}
+
+message DeleteChatBlacklistCommand {
+    int64 chat_id = 1 [jstype=JS_STRING];
+    int64 alias_id = 2 [jstype=JS_STRING];
+    int64 blocker_id = 3 [jstype=JS_STRING];
+    string alias_token = 4; // # FIXME: only for migration used, must be removed after migration finished.
+}
+
+message GetNearbyFunChatsCommand {
+    double latitude = 1;
+    double longitude = 2;
+    int64 anchor = 3 [jstype=JS_STRING];
+    int32 max_distance = 4;
+    int32 min_distance = 5;
+    int64 user_id = 6 [jstype=JS_STRING];
+}
+
+message GetNearbyFunChatsResult {
+    repeated NearbyFunChats fun_chats = 1;
+    int64 anchor = 2 [jstype=JS_STRING];
+}
+
+message NearbyFunChats {
+    int64 chat_id = 1 [jstype=JS_STRING];
+    string subject = 2;
+    string description = 3;
+    string photo_uri = 4;
+    string cover_photo_uri = 5;
+    double distance = 6;
+    int32 participants_count = 7;
+    int32 participants_limit = 8;
+    bool is_participant = 9;
+    bool is_official = 10;
+}
+
+message GetFunChatsTagsResult {
+    repeated FunChatsByTag fun_chats = 1;
+}
+
+message FunChatsByTag {
+    int32 tag_id = 1;
+    repeated int64 chat_ids = 2 [jstype=JS_STRING];
+}
+
+message UpdateFunChatsTagsCommand {
+    repeated FunChatsByTag fun_chats = 1;
+}
+
+message GetExhibitionTagsResult {
+    repeated Tag tags = 1;
+}
+
+message GetAttachableTagsResult {
+    repeated Tag tags = 1;
+}
+
+message Tag {
+    int32 id = 1;
+    string name = 2;
+    string cover_uri = 3;
+    int32 sequence = 4;
+    bool attachable = 5;
+    bool exhibitable = 6;
+    int64 created_time = 7 [jstype=JS_STRING];
+    int64 modified_time = 8 [jstype=JS_STRING];
+}
+
+message GetFunChatsByTagCommand {
+    int32 tag_id = 1;
+    int32 page = 2;
+    int64 user_id = 3 [jstype=JS_STRING];
+}
+
+message GetFunChatsByTagResult {
+    repeated TagFunChat fun_chats = 1;
+    int32 page = 2;
+}
+
+message GetPublicChatsByTagCommand {
+    int32 tag_id = 1;
+    int32 page = 2;
+    int64 user_id = 3 [jstype=JS_STRING];
+}
+
+message GetPublicChatsByTagResult {
+    repeated Chat chats = 1;
+    int32 page = 2;
+
+    message Chat {
+        int64 chat_id = 1 [jstype=JS_STRING];
+        ChatType type = 2;
+        ChatStatus status = 3;
+        string subject = 4;
+        string description = 5;
+        string photo_uri = 6;
+        string cover_photo_uri = 7;
+        int32 participants_count = 8;
+        int32 participants_limit = 9;
+        bool is_participant = 10;
+        bool is_official = 11;
+        bool is_subscribed = 12;
+        int64 start_time = 13 [jstype=JS_STRING];
+        string invite_link = 14;
+    }
+}
+
+message TagFunChat {
+    int64 chat_id = 1 [jstype=JS_STRING];
+    string subject = 2;
+    string description = 3;
+    string photo_uri = 4;
+    string cover_photo_uri = 5;
+    int32 participants_count = 6;
+    int32 participants_limit = 7;
+    bool is_participant = 8;
+    int64 last_message_time = 9;
+    bool is_official = 10;
+}
+
+message AddFunChatBlockStatusCommand {
+    repeated int64 chat_ids = 1 [jstype=JS_STRING];
+}
+
+message DeleteFunChatBlockStatusCommand {
+    repeated int64 chat_ids = 1 [jstype=JS_STRING];
+}
+
+message GetFunChatsToBackendCommand {
+    repeated int64 chat_ids = 1 [jstype=JS_STRING];
+}
+
+message GetFunChatsToBackendResult {
+    repeated FunChatToBackend fun_chats = 1;
+}
+
+message FunChatToBackend {
+    int64 chat_id = 1 [jstype=JS_STRING];
+    string subject = 2;
+    int32 participants_count = 3;
+    bool is_block = 4;
+    string description = 5;
+    int64 owner_id = 6 [jstype=JS_STRING];
+    int64 created_time = 7 [jstype=JS_STRING];
+    int64 modified_time = 8 [jstype=JS_STRING];
+    bool is_official = 9;
+    string service_id = 10;
+    string photo_uri = 11;
+    string cover_photo_uri = 12;
+    ChatProfileMetaData metadata = 13;
+    repeated int32 tags = 14;
+}
+
+message CreateGameChatCommand {
+    string subject = 1;
+    string description = 2;
+    string photo_uri = 3;
+    string cover_photo_uri = 4;
+    repeated int64 member_ids = 5 [jstype=JS_STRING];
+    int64 user_id = 6 [jstype=JS_STRING];
+    string game_id = 7;
+    string game_name = 8;
+}
+
+message CreateGameChatResult {
+    int64 chat_id = 1 [jstype=JS_STRING];
+    string external_chat_id = 2;
+}
+
+message UpdateGameChatCommand {
+    string subject = 1;
+    string description = 2;
+    string photo_uri = 3;
+    string cover_photo_uri = 4;
+    int64 alias_id = 5 [jstype=JS_STRING];
+    int64 chat_id = 6 [jstype=JS_STRING];
+    int64 new_owner = 7 [jstype=JS_STRING];
+}
+
+message AddGameChatParticipantsCommand {
+    int64 chat_id = 1 [jstype=JS_STRING];
+    repeated int64 member_ids = 2 [jstype=JS_STRING];
+    int64 alias_id = 3 [jstype=JS_STRING];
+}
+
+message AddChatParticipantsFavoriteCommand {
+    int64 chat_id = 1 [jstype=JS_STRING];
+    int64 alias_id = 2 [jstype=JS_STRING];
+}
+
+message RemoveChatParticipantsFavoriteCommand {
+    int64 chat_id = 1 [jstype=JS_STRING];
+    int64 alias_id = 2 [jstype=JS_STRING];
+}
+
+message AcceptInvitationCommand {
+    int64 chat_id = 1 [jstype=JS_STRING];
+    int64 alias_id = 2 [jstype=JS_STRING];
+    int64 real_alias_id = 3 [jstype=JS_STRING];
+}
+
+message RejectInvitationCommand {
+    int64 chat_id = 1 [jstype=JS_STRING];
+    int64 alias_id = 2 [jstype=JS_STRING];
+}
+
+message InviteChatCommand {
+    int64 alias_id = 1 [jstype=JS_STRING];
+    int64 chat_id = 2 [jstype=JS_STRING];
+    repeated int64 invitee_ids = 3 [jstype=JS_STRING];
+    repeated string invitee_qrcodes = 4;
+    int64 real_alias_id = 5 [jstype=JS_STRING];
+}
+
+message GetFunChatsByCuratorsCommand {
+    repeated int64 alias_ids = 1 [jstype=JS_STRING];
+}
+
+message GetFunChatsByCuratorsResult {
+    repeated ChatBrief fun_chats = 1;
+}
+
+message ChatBrief {
+    int64 chat_id = 1 [jstype=JS_STRING];
+    string subject = 2;
+    int32 participants_count = 3;
+    int64 alias_id = 4 [jstype=JS_STRING];
+    string photo_uri = 5;
+    int64 created_time = 6 [jstype=JS_STRING];
+    int64 modified_time = 7 [jstype=JS_STRING];
+}
+
+message AddFunChatCuratorCommand {
+    int64 chat_id = 1 [jstype=JS_STRING];
+    int64 alias_id = 2 [jstype=JS_STRING];
+    int64 invitee_id = 3 [jstype=JS_STRING];
+}
+
+message SendScheduleMessageCommand {
+    int64 chat_id = 1 [jstype=JS_STRING];
+    int64 sender_id = 2 [jstype=JS_STRING];
+    RawMessage raw_message = 3;
+    ReplyMessage reply_message = 4;
+    string device = 5;
+    int64 schedule_time = 6 [jstype=JS_STRING];
+}
+
+message SendScheduleMessageResult {
+    int32 schedule_id = 1;
+}
+
+message GetScheduleMessagesCommand {
+    int64 chat_id = 1 [jstype=JS_STRING];
+    int64 alias_id = 2 [jstype=JS_STRING];
+}
+
+message GetScheduleMessagesResult {
+    repeated ScheduleMessage schedule_messages = 1;
+}
+
+message ScheduleMessage {
+    int32 schedule_id = 1;
+    string message_metadata = 2;
+    string reply_message_metadata = 3;
+    int64 schedule_time = 4 [jstype=JS_STRING];
+}
+
+message DeleteScheduleMessageCommand {
+    int64 chat_id = 1 [jstype=JS_STRING];
+    int64 alias_id = 2 [jstype=JS_STRING];
+    int32 schedule_id = 3;
+}
+
+message UpdateMessageMetadataCommand {
+    string thumbnail = 1;
+    int64 size = 2;
+    int32 height = 3;
+    int32 width = 4;
+    int32 duration = 5;
+    MimeType mime_type = 6;
+    int64 message_id = 7 [jstype=JS_STRING];
+    int64 chat_id = 8 [jstype=JS_STRING];
+}
+
+message UpdateAlbumPhotoMetadataCommand {
+    string thumbnail = 1;
+    int64 size = 2 [jstype=JS_STRING];
+    int32 height = 3;
+    int32 width = 4;
+    MimeType mime_type = 5;
+    int64 photo_id = 6 [jstype=JS_STRING];
+}
+
+message GetFunChatHomePageCommand {
+    int64 user_id = 1 [jstype=JS_STRING];
+}
+
+message GetFunChatHomePageResult {
+    repeated TagFunChat recommend_chats = 1;
+    repeated TagFunChat popular_chats = 2;
+    repeated Tag tag_list = 3;
+    int32 recommend_tag_id = 4;
+    int32 popular_tag_id = 5;
+    int32 period_tag_id = 6; // 限時聊天的 tag_info.id
+}
+
+message UnlockWhisperMessagesCommand {
+    int64 chat_id = 1 [jstype=JS_STRING];
+    int64 alias_id = 2 [jstype=JS_STRING];
+}
+
+message UnlockWhisperMessagesResult {
+    repeated WhisperMessage whisperMessages = 1;
+}
+
+message GetChatsByAnonymousCommand {
+    int64 alias_id = 1 [jstype=JS_STRING];
+}
+
+message GetChatsByAnonymousResult {
+    repeated ChatBrief chats = 1;
+    int32 total_chats = 2;
+}
+
+message SendNotificationCommand {
+    NotificationPayload payload = 1;
+}
+
+message SendJollyBuyNotificationCommand {
+    string open_id = 1;
+}
+
+message GetNotificationsCommand {
+    int64 started_notification_id = 1 [jstype=JS_STRING];
+    int64 alias_id = 2 [jstype=JS_STRING];
+}
+
+message GetNotificationsResult {
+    repeated Notification notifications = 1;
+    bool hasMoreNotification = 2;
+}
+
+message GetFunChatsByCreatedTimeCommand {
+  string created_time = 1;
+}
+
+message GetFunChatsByCreatedTimeResult {
+  repeated TagFunChat fun_chats = 1;
+}
+
+message GetFunChatParticipantByUserIDAndChatIDsCommand {
+    repeated int64 chat_ids = 1 [jstype=JS_STRING];
+    int64 real_alias_id = 2 [jstype=JS_STRING];
+}
+
+message GetFunChatParticipantByUserIDAndChatIDsResult {
+    repeated int64 chat_ids = 2 [jstype=JS_STRING];
+}
+
+message SocketEnterChatCommand {
+    int64 chat_id = 1 [jstype=JS_STRING];
+    int64 alias_id = 2 [jstype=JS_STRING];
+    int64 last_message_id = 3 [jstype=JS_STRING];
+}
+
+message SocketEnterChatResult {
+    int64 pins_last_updated_time = 1 [jstype=JS_STRING];
+    int64 chats_last_updated_time = 2 [jstype=JS_STRING];
+    int64 others_last_read_id = 3 [jstype=JS_STRING];
+    int64 self_last_read_id = 4 [jstype=JS_STRING];
+    repeated ChatMessage messages = 5;
+    repeated int64 updated_message_ids = 6 [jstype=JS_STRING];
+    int64 earliest_mention_id = 7 [jstype=JS_STRING];
+    bool is_blocking = 8;
+    bool has_next = 9;
+}
+
+message SocketLeaveChatCommand {
+    int64 chat_id = 1 [jstype=JS_STRING];
+    int64 alias_id = 2 [jstype=JS_STRING];
+    bool is_blocking = 3;
+}
+
+message SocketLeaveChatResult {
+    repeated ChatMessage messages = 1;
+    int64 read_id = 2 [jstype=JS_STRING];
+}
+
+message AddTagCommand {
+    string name = 1;
+    string cover_uri = 2;
+    int32 sequence = 3;
+    bool attachable = 4;
+    bool exhibitable = 5;
+}
+
+message AddTagResult {
+    int32 tag_id = 1;
+    int64 created_time = 2 [jstype=JS_STRING];
+}
+
+message GetTagsCommand {
+    repeated int32 tag_ids = 1;
+}
+
+message GetTagsResult {
+    repeated Tag tags = 1;
+}
+
+message UpdateTagCommand {
+    int32 tag_id = 1;
+    string name = 2;
+    string cover_uri = 3;
+    bool attachable = 4;
+    bool exhibitable = 5;
+}
+
+message UpdateTagsSeqCommand {
+    repeated FunChatTagSeq tags = 1;
+}
+
+message FunChatTagSeq {
+    int32 tag_id = 1;
+    int32 sequence = 2;
+}
+
+message DeleteTagCommand {
+    int32 tag_id = 1;
+}
+
+message GetUserSendMsgCountDuringActivityCommand {
+    int64 chat_id = 1 [jstype=JS_STRING];
+    int64 start_time = 2 [jstype=JS_STRING];
+    int64 end_time = 3 [jstype=JS_STRING];
+}
+
+message GetUserSendMsgCountDuringActivityResult {
+    repeated SendMsgCountDuringActivityBySender senders = 1;
+}
+
+message SendMsgCountDuringActivityBySender {
+    string open_id = 1;
+    int32 count = 2;
+}
+
+message GetHomePageCommand {
+    int64 user_id = 1 [jstype=JS_STRING];
+}
+
+message GetHomePageResult {
+    repeated TagFunChat recommend_chats = 1;
+    repeated TagFunChat popular_chats = 2;
+    repeated Tag tags = 3;
+    int32 recommend_tag_id = 4;
+    int32 popular_tag_id = 5;
+    repeated PeriodChat period_chats = 6;
+    int32 period_tag_id = 7;
+}
+
+message DismissAssistantChatCommand {
+    repeated int64 real_alias_ids = 1 [jstype=JS_STRING];
+    int64 service_chat_participant_id = 2 [jstype=JS_STRING];
+}
+
+message DismissAssistantChatResult {
+    message DismissAssistantChatFailDetail {
+        int64 fail_real_alias_id = 1 [jstype=JS_STRING];
+        string error_message = 2;
+    }
+    repeated DismissAssistantChatFailDetail fail_details = 1;
+}
+
+message StartVoteInChatCommand {
+    int64 vote_id = 1 [jstype=JS_STRING];
+    int64 executor_alias_id = 2 [jstype=JS_STRING];
+    int64 chat_id = 3 [jstype=JS_STRING];
+    string subject_title = 4;
+    string subject_description = 5;
+    string action = 6;
+    string image_uri = 7;
+    string vote_uri = 8;
+    bool is_pinned = 9;
+    int64 end_time = 10 [jstype=JS_STRING];
+}
+
+message EndVoteInChatCommand {
+    int64 vote_id = 1 [jstype=JS_STRING];
+    int64 executor_alias_id = 2 [jstype=JS_STRING];
+    int64 chat_id = 3 [jstype=JS_STRING];
+    string subject_title = 4;
+    string subject_description = 5;
+    string action = 6;
+    string image_uri = 7;
+    string vote_uri = 8;
+    bool is_pinned = 9;
+}
+
+message GetChatExtensionsCommand {
+    int64 chat_id = 1 [jstype=JS_STRING];
+    int64 user_id = 2 [jstype=JS_STRING];
+}
+
+message GetChatExtensionsResult {
+    repeated ChatExtension chat_extensions = 1;
+}
+
+message ChatExtension {
+    int64 extension_id = 1 [jstype=JS_STRING];
+    string extension_name = 2;
+    string icon_uri = 4;
+    string extension_uri = 3;
+}

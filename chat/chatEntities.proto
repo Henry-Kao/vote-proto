@@ -1,0 +1,906 @@
+syntax = "proto3";
+
+package beanfun.chat.v1;
+option go_package = "./;beanfun_chat_v1";
+
+import "google/protobuf/wrappers.proto";
+
+enum GraphicType {
+    GRAPHIC_TYPE_UNKNOWN = 0;
+    GRAPHIC_TYPE_A = 1;
+    GRAPHIC_TYPE_B = 2;
+    GRAPHIC_TYPE_C = 3;
+    GRAPHIC_TYPE_D = 4;
+    GRAPHIC_TYPE_E = 5;
+    GRAPHIC_TYPE_F = 6;
+    GRAPHIC_TYPE_G = 7;
+}
+
+enum OptionType {
+    OPTION_TYPE_UNKNOWN = 0;
+    OPTION_TYPE_WEB_PAGE = 1;
+    OPTION_TYPE_APP_LINK = 2;
+    OPTION_TYPE_H5_PAGE = 3;
+    OPTION_TYPE_EXTENSION_PAGE = 4;
+    OPTION_TYPE_POSTBACK = 5;
+    OPTION_TYPE_APP_LOG = 6;
+}
+
+enum ChatEventType {
+    CHAT_EVENT_TYPE_UNKNOWN = 0;
+    CHAT_EVENT_TYPE_CREATED = 1;
+    CHAT_EVENT_TYPE_UPDATED = 2;
+    CHAT_EVENT_TYPE_REMOVED = 3;
+    CHAT_EVENT_TYPE_DISMISSED = 4;
+}
+
+enum ChatStatus {
+    CHAT_STATUS_UNKNOWN  = 0;
+    CHAT_STATUS_ACTIVE   = 1;
+    CHAT_STATUS_INACTIVE = 2;
+    CHAT_STATUS_BLOCKED  = 3;
+}
+
+// definition of pinned message type
+// deprecated when client use GetChatPinnedMessageV2
+enum PinnedMessageType {
+    PINNED_MESSAGE_TYPE_UNKNOWN = 0;
+    PINNED_MESSAGE_TYPE_ANNOUNCEMENT = 1;
+    PINNED_MESSAGE_TYPE_ACTIVITY = 2 [deprecated=true];
+}
+
+// definition of pinned message event type
+enum PinnedMessageEventType {
+    PINNED_MESSAGE_EVENT_TYPE_UNKNOWN = 0;
+    PINNED_MESSAGE_EVENT_TYPE_ADDED = 1;
+    PINNED_MESSAGE_EVENT_TYPE_REMOVED = 2;
+    PINNED_MESSAGE_EVENT_TYPE_SELF_REMOVED = 3;
+}
+
+enum VoteEventType {
+    VOTE_EVENT_TYPE_UNKNOWN = 0;
+    VOTE_EVENT_TYPE_ADDED = 1;
+    VOTE_EVENT_TYPE_UPDATED = 2;
+    VOTE_EVENT_TYPE_REMOVED = 3;
+}
+
+// definition of user preference event type
+enum UserPreferenceEventType {
+    USER_PREFERENCE_EVENT_TYPE_UNKNOWN = 0;
+    USER_PREFERENCE_EVENT_TYPE_MUTE_ADDED = 1;
+    USER_PREFERENCE_EVENT_TYPE_MUTE_REMOVED = 2;
+    USER_PREFERENCE_EVENT_TYPE_AD_BLOCK_ADDED = 3;
+    USER_PREFERENCE_EVENT_TYPE_AD_BLOCK_REMOVED = 4;
+    USER_PREFERENCE_EVENT_TYPE_PINNED_ADDED = 5;
+    USER_PREFERENCE_EVENT_TYPE_PINNED_REMOVED = 6;
+}
+
+// definition of chat role
+enum ChatRole {
+    UNKNOWN_CHAT_ROLE = 0;
+    OWNER = 1;
+    MODERATOR = 2;
+    NORMAL_PARTICIPANT = 3;
+}
+
+// definition of chat type
+enum ChatType {
+    UNKNOWN_CHAT_TYPE = 0;
+    GROUP = 1;
+    MATCHING = 2;
+    ASSISTANT = 3;
+    FUN_CHAT = 4;
+    GAME = 5;
+    PAIR = 6;
+    PERIOD = 7;
+}
+
+// definition of message event type
+enum MessageEventType {
+    MESSAGE_EVENT_TYPE_UNKOWN = 0;
+    MESSAGE_EVENT_TYPE_RECALLED = 1;
+    MESSAGE_EVENT_TYPE_EXPIRED = 2;
+    MESSAGE_EVENT_TYPE_REMOVED = 3;
+}
+
+// definition of mime type
+enum MimeType {
+    UNKNOWN_MIME_TYPE = 0;
+    TEXT_PLAIN = 1; // .txt, text/plain
+    TEXT_CSV = 2; // .csv, text/csv
+    TEXT_XML = 3; // .xml, text/xml
+    TEXT_HTML = 4; // .htm & .html, text/html
+    TEXT_RTF = 5; // .rtf, text/rtf
+    IMAGE_PNG = 10; // .png, image/png
+    IMAGE_JPEG = 11; // .jpeg & .jpg, image/jpeg
+    IMAGE_GIF = 12; // .gif, image/gif
+    IMAGE_APNG = 13; // .png, image/apng
+    IMAGE_SVG = 14; // .svg image/svg+xml
+    IMAGE_HEIC = 15; // .heic image/heic
+    IMAGE_HEIF = 16; // .heif image/heif
+    IMAGE_PSD = 17; // .psd image/vnd.adobe.photoshop
+    IMAGE_WMF = 18; // .wmf image/x-wmf
+    VIDEO_MPEG = 20; // .mpeg, video/mpeg
+    VIDEO_MP4 = 21; // .mp4, video/mp4
+    VIDEO_OGG = 22; // .ogv, video/ogg
+    VIDEO_QUICKTIME = 23; // .mov, video/quicktime
+    VIDEO_WEBM = 24; // .webm, video/webm
+    VIDEO_AVI = 25; // .avi, video/avi
+    VIDEO_X_MS_WMV = 26; // .wmv, video/x-ms-wmv
+    VIDEO_X_FLV = 27; // .flv, video/x-flv
+    AUDIO_MP4 = 40; // .mp4, audio/mp4
+    AUDIO_MPEG = 41; // .mpeg, audio/mpeg
+    AUDIO_WAV = 42; // .wav, audio/wav
+    AUDIO_WEBM = 43; // .weba, audio/webm
+    AUDIO_M4A = 44; // .m4a, audio/m4a
+    APPLICATION_KEYNOTE = 56; // .key, application/x-iwork-keynote-sffkey
+    APPLICATION_NUMBERS = 57; // .numbers, application/x-iwork-number-sffnumber
+    APPLICATION_PAGES = 58; // .pages, application/x-iwork-pages-sffpages
+    APPLICATION_POSTSCRIPT = 59; // .ai, application/postscript
+    APPLICATION_PDF = 60; // .pdf, application/pdf
+    APPLICATION_ZIP = 61; // .zip & .rar, application/zip
+    APPLICATION_MS_WORD = 62; // .doc & .dot, application/msword
+    APPLICATION_OPENXML_DOCUMENT_WORD = 63; // .docx, application/vnd.openxmlformats-officedocument.wordprocessingml.document
+    APPLICATION_MS_POWERPOINT = 64; // .ppt & .pot, application/vnd.ms-powerpoint
+    APPLICATION_OPENXML_POWERPOINT = 65; // .pptx, application/vnd.openxmlformats-officedocument.presentationml.presentation
+    APPLICATION_MS_EXCEL = 66; // .xls & .xlt, application/vnd.ms-excel
+    APPLICATION_OPENXML_SHEET_EXCEL = 67; // .xlsx, application/vnd.openxmlformats-officedocument.spreadsheetml.sheet
+    APPLICATION_DOCUMENT_MS_WORD = 68; //.docm, application/vnd.ms-word.document.macroenabled.12
+    APPLICATION_TEMPLATE_MS_WORD = 69; //.dotm, application/vnd.ms-word.template.macroenabled.12
+    APPLICATION_OPENXML_TEMPLATE_WORD = 70; // .dotx, application/vnd.openxmlformats-officedocument.wordprocessingml.template
+    APPLICATION_XPS_MS_WORD = 71; //.xps, application/vnd.ms-xpsdocument
+    APPLICATION_SHEET_MS_EXCEL = 72; // .xlsm, application/vnd.ms-excel.sheet.macroenabled.12
+    APPLICATION_TEMPLATE_MS_EXCEL = 73; // .xltm, application/vnd.ms-excel.template.macroenabled.12
+    APPLICATION_OPENXML_TEMPLATE_EXCEL = 74; // .xltx, application/vnd.openxmlformats-officedocument.spreadsheetml.template
+    APPLICATION_TEMPLATE_MS_POWERPOINT = 75; // .potm, application/vnd.ms-powerpoint.template.macroenabled.12
+    APPLICATION_OPENXML_TEMPLATE_POWERPOINT = 76; // .potx, application/vnd.openxmlformats-officedocument.presentationml.template
+    APPLICATION_MS_OFFICE_THEME_POWERPOINT = 77; // .thmx, application/vnd.ms-officetheme
+    APPLICATION_7Z = 78; // .7z, application/x-7z-compressed
+    APPLICATION_X_BEANFUN_TEXT = 80; // beanfun! text type, application/x.beanfun-text
+    APPLICATION_X_BEANFUN_INTERACTIVE = 81; // beanfun! interactive type, application/x.beanfun-interactive
+    APPLICATION_X_BEANFUN_POSTBACK = 82; // beanfun! postback type, application/x.beanfun-postback
+    APPLICATION_X_BEANFUN_STICKERS = 83; // beanfun! stickers type, application/x.beanfun-stickers
+    APPLICATION_X_BEANFUN_CALLING = 84; // beanfun! calling type, application/x.beanfun-calling
+    APPLICATION_X_BEANFUN_LOCATION = 85; // beanfun! location type, application/x.beanfun-location
+    APPLICATION_X_BEANFUN_CHEST = 86; // beanfun! chest type, application/x.beanfun-chest
+    APPLICATION_X_BEANFUN_GRAPHIC = 87; // beanfun! graphic type, application/x.beanfun-graphic
+    APPLICATION_X_BEANFUN_GIFT = 88; // beanfun! gift type, application/x.beanfun-gift
+    APPLICATION_X_BEANFUN_STICKERS_COMBO = 89; // beanfun! stickers combo type, application/x.beanfun-stickers-combo
+    APPLICATION_X_BEANFUN_TEXT_CONTENT = 90; // beanfun! text content type, application/x.beanfun-text-content
+    APPLICATION_X_BEANFUN_ALBUM_CREATED = 100; // beanfun! album created type, application/x.beanfun-album-created
+    APPLICATION_X_BEANFUN_ALBUM_DELETED = 101; // beanfun! album deleted type, application/x.beanfun-album-deleted
+    APPLICATION_X_BEANFUN_ALBUM_RENAMED = 102; // beanfun! album renamed type, application/x.beanfun-album-renamed
+    APPLICATION_X_BEANFUN_PHOTOS_UPLOADED = 103; // beanfun! photos uploaded type, application/x.beanfun-photos-uploaded
+    APPLICATION_X_BEANFUN_PHOTOS_DELETED = 104; // beanfun! photos deleted type, application/x.beanfun-photos-deleted
+    APPLICATION_X_BEANFUN_MESSAGE_RECALLED = 105; // beanfun! recall message type, application/x.beanfun-message-recalled
+    APPLICATION_X_BEANFUN_CHAT_ROLE_CHANGED = 106; // beanfun! chat changed role type, application/x.beanfun-chat-role-changed
+    APPLICATION_X_BEANFUN_CHAT_LEFT = 107; // beanfun! chat left type, application/x.beanfun-chat-left
+    APPLICATION_X_BEANFUN_CHAT_UPDATED = 108; // beanfun! chat information updated type, application/x.beanfun-chat-updated
+    APPLICATION_X_BEANFUN_CHAT_JOINED = 109; // beanfun! chat joined type, application/x.beanfun-chat-joined
+    APPLICATION_X_BEANFUN_CHAT_OWNER_CHANGED = 110; // beanfun! chat owner changed type, application/x.beanfun-chat-owner-changed
+}
+
+enum PhotosOrderType {
+    PHOTOS_ORDER_TYPE_UNKNOWN = 0;
+    PHOTOS_ORDER_TYPE_UPLOAD_TIME = 1;
+    PHOTOS_ORDER_TYPE_PHOTO_TIME = 2;
+}
+
+enum FriendStatus {
+    FRIEND_STATUS_TYPE_UNKNOWN = 0;
+    FRIEND_STATUS_TYPE_INVITING = 1;
+    FRIEND_STATUS_TYPE_FRIEND = 2;
+    FRIEND_STATUS_TYPE_BLOCKED = 3;
+}
+
+enum FriendType {
+    FRIEND_TYPE_UNKNOWN = 0;
+    FRIEND_TYPE_PHONE = 1;
+    FRIEND_TYPE_EMAIL = 2;
+    FRIEND_TYPE_CUSTOM_ID = 3;
+    FRIEND_TYPE_QR_CODE = 4;
+    FRIEND_TYPE_NEAR_BY = 5;
+    FRIEND_TYPE_CONFIRM = 6;
+    FRIEND_TYPE_PROFILE = 7;
+    FRIEND_TYPE_APPLIED = 8;
+}
+
+enum NotificationEventType {
+    NOTIFICATION_EVENT_TYPE_UNKNOWN = 0;
+    NOTIFICATION_EVENT_TYPE_CHAT_MESSAGE = 1;
+    NOTIFICATION_EVENT_TYPE_CHAT_APPLICANTS_UPDATED = 2;
+    NOTIFICATION_EVENT_TYPE_CHAT_INVITATION_UPDATED = 3;
+    NOTIFICATION_EVENT_TYPE_ALBUM_CREATED = 4;
+    NOTIFICATION_EVENT_TYPE_ALBUM_UPDATED = 5;
+    NOTIFICATION_EVENT_TYPE_ALBUM_DELETED = 6;
+    NOTIFICATION_EVENT_TYPE_PHOTO_UPLOADED = 7;
+    NOTIFICATION_EVENT_TYPE_PHOTO_DELETED = 8;
+    NOTIFICATION_EVENT_TYPE_CALL_BF_NATIVE = 9;
+    NOTIFICATION_EVENT_TYPE_CHAT_WHISPER_MESSAGE = 10;
+    NOTIFICATION_EVENT_TYPE_CHAT_PERIOD_ON_AIR = 11;
+}
+
+enum SuspectReasonType {
+    SUSPECT_REASON_TYPE_UNKNOWN = 0;
+    SUSPECT_REASON_TYPE_ADVERTISE_ROBOT = 1;
+    SUSPECT_REASON_TYPE_NUDITY_OR_SEXUAL_ACTIVITY = 2;
+    SUSPECT_REASON_TYPE_SCAM_OR_FRAUD = 3;
+    SUSPECT_REASON_TYPE_CUSTOM_REASON = 4;
+}
+
+enum CallType {
+    CALL_TYPE_UNKNOWN = 0;
+    CALL_TYPE_P2P = 1;
+    CALL_TYPE_CONFERENCE_CALL = 2;
+}
+
+enum CallState {
+    CALL_STATE_UNKNOWN = 0;
+    CALL_STATE_CALL_ENDED = 1;
+    CALL_STATE_UNANSWERED = 2;
+    CALL_STATE_CANCELLED = 3;
+    CALL_STATE_CALL_BF_NATIVE = 4;
+    CALL_STATE_UNANSWERED_AND_NOT_ALLOW_VOICE_CALLS = 5;
+    CALL_STATE_CANCELLED_AND_NOT_ALLOW_VOICE_CALLS = 6;
+    CALL_STATE_REJECTED = 7;
+}
+
+enum LogLevel {
+    LOG_LEVEL_UNKNOWN = 0;
+    LOG_LEVEL_TRACE = 1;
+    LOG_LEVEL_DEBUG = 2;
+    LOG_LEVEL_INFO = 3;
+    LOG_LEVEL_WARN = 4;
+    LOG_LEVEL_ERROR = 5;
+    LOG_LEVEL_FATAL = 6;
+}
+
+enum AppLogScope {
+    APP_LOG_SCOPE_UNKNOWN = 0;
+    APP_LOG_SCOPE_CREATE_OR_LOGIN = 1;
+    APP_LOG_SCOPE_GAME_LOGIN = 2;
+    APP_LOG_SCOPE_GAMAPAY = 3;
+    APP_LOG_SCOPE_H5_LOGIN = 4;
+}
+
+enum TextContentType {
+    TEXT_CONTENT_TYPE_UNKNOWN = 0;
+    TEXT_CONTENT_TYPE_TEXT = 1;
+    TEXT_CONTENT_TYPE_MENTION = 2;
+    TEXT_CONTENT_TYPE_URI = 3;
+    TEXT_CONTENT_TYPE_PHONE = 4;
+    TEXT_CONTENT_TYPE_EMAIL = 5;
+}
+
+// send message packet
+message ReplyMessage {
+    int64 message_id = 1 [jstype=JS_STRING];
+    int64 sender_id = 2 [jstype=JS_STRING];
+    MimeType mime_type = 3;
+    string sender_nickname = 4;
+    string sender_avatar = 5;
+    string content = 6;
+    MimeTypeMetadata metadata = 8;
+}
+
+message AlbumPhoto {
+    int64 id = 1 [jstype=JS_STRING];
+    int32 width = 2;
+    int32 height = 3;
+    string uri = 4;
+    string thumbnail_uri = 5;
+    int64 size = 6 [jstype=JS_STRING];
+}
+
+message TextPlainMetadata {
+    int64 size = 1 [jstype=JS_STRING];
+}
+
+message ImageMetadata {
+    int32 width = 1;
+    int32 height = 2;
+    string thumbnail_uri = 3;
+    int64 size = 4 [jstype=JS_STRING];
+}
+
+message VideoMetadata {
+    int32 width = 1;
+    int32 height = 2;
+    string thumbnail_uri = 3;
+    int32 duration = 4;
+    int64 size = 5 [jstype=JS_STRING];
+}
+
+message AudioMetadata {
+    int32 duration = 1;
+}
+
+message FileMetadata {
+    int64 size = 1 [jstype=JS_STRING];
+}
+
+message ApplicationXBeanfunTextMetadata {
+    repeated AliasInfo mention = 3;
+}
+
+message ApplicationXBeanfunTextContentMetadata {
+    repeated ApplicationXBeanfunTextContentItem items = 1;
+}
+
+message ApplicationXBeanfunTextContentItem {
+    TextContentType content_type = 1;
+    TextContentMetadata metadata = 2;
+}
+
+message TextContentMetadata {
+    oneof metadata_oneof {
+        string text = 1;
+        AliasInfo mention = 2;
+        URI uri = 3;
+        string phone = 4;
+        string email = 5;
+    }
+    message URI {
+        string uri = 1;
+        string title = 2;
+        string description = 3;
+        string image_uri = 4;
+    }
+}
+
+message AppLogInfo {
+    LogLevel level = 1;
+    bool open_console = 2;
+    AppLogScope scope = 3;
+}
+
+message Option {
+    string opt_key = 1;
+    OptionType opt_type = 2;
+    string description = 3;
+    string uri = 4;
+    repeated int32 tags = 5;
+    string proxy_service_id = 6;
+    string title = 7;
+    string postback_data = 8;
+    AppLogInfo app_log_info = 9;
+}
+
+message ApplicationXBeanfunInteractiveMetadata {
+    string service_id = 2;
+    ImageInfo image_info = 3;
+    bool forwardable = 4;
+    bool once = 5;
+    string expired_hint = 7;
+    repeated Option options = 8;
+    string interactive_key = 11;
+    int64 message_track_id = 12 [jstype=JS_STRING];
+    string session_id = 13;
+    string title = 14;
+}
+
+message ApplicationXBeanfunGraphicMetadata {
+    string service_id = 2;
+    ImageInfo image_info = 3;
+    GraphicType graphic_type = 7;
+    repeated Option options = 8;
+    string interactive_key = 11;
+    int64 message_track_id = 12 [jstype=JS_STRING];
+}
+
+message ApplicationXBeanfunGiftMetadata {
+    string link_uri = 2;
+    string link_description = 3;
+    MimeType image_type = 4;
+    string image_uri = 5;
+}
+
+message ApplicationXBeanfunPostbackMetadata {
+    int64 parent_message_id = 1 [jstype=JS_STRING];
+    string selected_option_key = 2;
+    string converted_postback_data = 3;
+}
+
+message ImageInfo {
+    MimeType mime_type = 1;
+    string uri = 2;
+    string thumbnail_uri = 3;
+}
+
+message ApplicationXBeanfunChestMetadata {
+    string title = 1;
+    string expired_hint = 4;
+    ImageInfo cover_image_info = 6;
+    ImageInfo sealed_image_info = 7;
+    ImageInfo unsealed_image_info = 8;
+    string description = 9;
+    string page_title = 10;
+    string page_uri = 11;
+    int64 message_track_id = 12 [jstype=JS_STRING];
+}
+
+message Sticker {
+    string sticker_pkg_id = 1;
+    string sticker_id = 2;
+    string sticker_format = 3;
+    string sticker_src_uri = 4;
+    string sticker_hd_uri = 5;
+    string sticker_thumb_uri = 6;
+    int32 width = 7;
+    int32 height = 8;
+}
+
+message ApplicationXBeanfunStickersMetadata {
+    Sticker sticker = 1;
+}
+
+message ApplicationXBeanfunStickersComboMetadata {
+    repeated Sticker stickers = 1;
+    string combo_id = 2;
+    string title = 3;
+    int32 width = 4;
+    int32 height = 5;
+    string image_uri = 6;
+}
+
+message ApplicationXBeanfunCallingMetadata {
+    CallType call_type = 1;
+    CallState call_state = 2;
+    string caller_nickname = 3;
+    int32 duration = 4;
+}
+
+message ApplicationXBeanfunLocationMetadata {
+    double longitude = 1;
+    double latitude = 2;
+}
+
+message ApplicationXBeanfunAlbumCreatedMetadata {
+    int32 album_id = 1;
+    string album_name = 2;
+}
+
+message ApplicationXBeanfunAlbumDeletedMetadata {
+    int32 album_id = 1;
+    string album_name = 2;
+}
+
+message ApplicationXBeanfunAlbumRenamedMetadata {
+    int32 album_id = 1;
+    string album_name = 2;
+}
+
+message ApplicationXBeanfunPhotosUploadedMetadata {
+    int32 album_id = 1;
+    string album_name = 2;
+    string thumbnail_uri = 3;
+    int32 photos_amount = 4;
+}
+
+message ApplicationXBeanfunPhotosDeletedMetadata {
+    int32 album_id = 1;
+    string album_name = 2;
+    int32 photos_amount = 4;
+}
+
+message ApplicationXBeanfunMessageRecalledMetadata {
+    AliasInfo recaller = 1;
+}
+
+message ApplicationXBeanfunChatLeftMetadata {
+    AliasInfo alias = 3;
+}
+
+message ApplicationXBeanfunChatJoinedMetadata {
+    repeated AliasInfo aliases = 2;
+}
+
+message ApplicationXBeanfunChatRoleChangedMetadata {
+    repeated int64 moderators = 1 [jstype=JS_STRING];
+    repeated int64 normal = 2 [jstype=JS_STRING];
+}
+
+message ApplicationXBeanfunChatOwnerChangedMetadata {
+    AliasInfo owner = 1;
+}
+
+message MimeTypeMetadata {
+    oneof metadata_oneof {
+        TextPlainMetadata text_plain_metadata = 1;
+        ImageMetadata image_metadata = 10;
+        VideoMetadata video_metadata = 20;
+        AudioMetadata audio_metadata = 30;
+        FileMetadata file_metadata = 60;
+        ApplicationXBeanfunTextMetadata application_x_beanfun_text_metadata = 80;
+        ApplicationXBeanfunInteractiveMetadata application_x_beanfun_interactive_metadata = 81;
+        ApplicationXBeanfunPostbackMetadata application_x_beanfun_postback_metadata = 82;
+        ApplicationXBeanfunStickersMetadata application_x_beanfun_stickers_metadata = 83;
+        ApplicationXBeanfunCallingMetadata application_x_beanfun_calling_metadata = 84;
+        ApplicationXBeanfunLocationMetadata application_x_beanfun_location_metadata = 85;
+        ApplicationXBeanfunChestMetadata application_x_beanfun_chest_metadata = 86;
+        ApplicationXBeanfunGraphicMetadata application_x_beanfun_graphic_metadata = 87;
+        ApplicationXBeanfunGiftMetadata application_x_beanfun_gift_metadata = 88;
+        ApplicationXBeanfunStickersComboMetadata application_x_beanfun_stickers_combo_metadata = 89;
+        ApplicationXBeanfunTextContentMetadata application_x_beanfun_text_content_metadata = 90;
+        ApplicationXBeanfunAlbumCreatedMetadata application_x_beanfun_album_created_metadata = 100;
+        ApplicationXBeanfunAlbumDeletedMetadata application_x_beanfun_album_deleted_metadata = 101;
+        ApplicationXBeanfunAlbumRenamedMetadata application_x_beanfun_album_renamed_metadata = 102;
+        ApplicationXBeanfunPhotosUploadedMetadata application_x_beanfun_photos_uploaded_metadata = 103;
+        ApplicationXBeanfunPhotosDeletedMetadata application_x_beanfun_photos_deleted_metadata = 104;
+        ApplicationXBeanfunMessageRecalledMetadata application_x_beanfun_message_recalled_metadata = 105;
+        ApplicationXBeanfunChatRoleChangedMetadata application_x_beanfun_chat_role_changed_metadata = 106;
+        ApplicationXBeanfunChatLeftMetadata application_x_beanfun_chat_left_metadata = 107;
+        ApplicationXBeanfunChatJoinedMetadata application_x_beanfun_chat_joined_metadata = 109;
+        ApplicationXBeanfunChatOwnerChangedMetadata application_x_beanfun_chat_owner_changed_metadata = 110;
+    }
+}
+
+// definition of snapshot
+message Snapshot {
+    repeated SnapshotItem snapshot_items = 1;
+}
+
+message SnapshotItem {
+    bool mentioned = 4;
+    bool scheduled = 5;
+    int64 chat_id = 6 [jstype=JS_STRING];
+    int32 participants_count = 8;
+    int32 unread_count = 9;
+    ChatType chat_type = 10;
+    ChatRole chat_role = 11;
+    bool pinned = 12;
+    bool muted = 13;
+    bool have_applicants = 14;
+    bool have_suspects = 15;
+    string game_name = 16;
+    string chat_subject = 17;
+    string chat_photo_uri = 18;
+    int64 sender_id = 19 [jstype=JS_STRING];
+    bool hidden = 20;
+    int64 target_id = 22 [jstype=JS_STRING]; // only appeared when pair chat or assistant chat
+    ChatMessage last_message = 23;
+    bool invited = 24;
+    int64 inviter = 25 [jstype=JS_STRING];
+    int64 joined_time = 26 [jstype=JS_STRING];
+    int64 invited_time = 27 [jstype=JS_STRING];
+    bool have_whispers = 28;
+    int64 alias_id = 29 [jstype=JS_STRING];
+    bool is_official = 30; // only appeared when fun chat
+    int64 start_time = 31; // only appeared when period chat
+}
+
+// definition of message
+message RawMessage {
+    MimeType mime_type = 1;
+    string content = 2;
+    bool display_full = 3;
+    MimeTypeMetadata metadata = 4;
+    int32 ttl = 5;
+    int64 expired_time = 6 [jstype=JS_STRING];
+}
+
+message AssistantSearch {
+    string open_id = 1;
+    string service_id = 2;
+}
+
+message PairSearch {
+    int64 target_id = 1 [jstype=JS_STRING];
+}
+
+message DemandMessage {
+    oneof which_chat_oneof {
+        int64 chat_id = 1 [jstype=JS_STRING];
+        string chat_ext_id = 2;
+        AssistantSearch assistant_search = 8;
+        PairSearch pair_search = 10;
+    }
+    oneof which_sender_oneof {
+        int64 sender_id = 3 [jstype=JS_STRING];
+        string service_id = 9;
+    }
+    RawMessage raw_message = 4;
+    ReplyMessage reply_message = 5;
+}
+
+message ChatMessage {
+    MimeType mime_type = 1;
+    int64 message_id = 2 [jstype=JS_STRING];
+    int64 chat_id = 3 [jstype=JS_STRING];
+    string content = 4;
+    int64 sender_id = 6 [jstype=JS_STRING];
+    MimeTypeMetadata metadata = 7;
+    ReplyMessage reply_message = 8;
+    int32 ttl = 9;
+    int64 message_time = 10 [jstype=JS_STRING];
+    int64 expired_time = 11 [jstype=JS_STRING];
+    bool display_full = 12;
+}
+
+message ChatMessageV2 {
+    int64 chat_id = 1 [jstype=JS_STRING];
+    int64 sender_id = 2 [jstype=JS_STRING];
+    RawMessage raw_message = 3;
+    ReplyMessage reply_message = 4;
+    int64 message_id = 5 [jstype=JS_STRING];
+    int64 message_time = 6 [jstype=JS_STRING];
+    bool display_full = 12;
+}
+
+message KafkaSendMessagePayload {
+    int64 ticket_id = 1 [jstype=JS_STRING];
+    string service_id = 2;
+    DemandMessage message = 3;
+    string device = 4;
+    bool is_ad = 5;
+}
+
+message KafkaReadMessagePayload {
+    int64 alias_id = 1 [jstype=JS_STRING];
+    int64 chat_id = 2 [jstype=JS_STRING];
+    int64 message_id = 3 [jstype=JS_STRING];
+}
+
+message KafkaProcessMessagePayload {
+    ChatMessage message = 1;
+    NotificationEventType event_type = 2;
+    int64 target_id = 3;
+    bool is_blocked = 4;
+}
+
+// definition of chats
+message UserChat {
+    int64 chat_id = 1 [jstype=JS_STRING];
+    ChatType type = 2;
+    string subject = 3;
+    string description = 4;
+    string photo_uri = 5;
+    string cover_photo_uri = 6;
+    string invite_link = 7;
+    int64 owner_id = 8 [jstype=JS_STRING];
+    ChatSetting setting = 9;
+    GameInfo game_info = 10;
+    ChatMetaData metadata = 11;
+    repeated int64 moderators = 12 [jstype=JS_STRING];
+    UserChatPreference user_preference = 13;
+    bool has_applicants = 14;
+    bool has_suspects = 15 [deprecated=true];
+    int32 participants_count = 16;
+    int64 modified_time = 17 [jstype=JS_STRING];
+    repeated int32 tags = 18;
+    int32 participants_limit = 19;
+    int64 inviter_id = 20 [jstype=JS_STRING];
+    int64 invited_time = 21 [jstype=JS_STRING];
+    ServiceProfile service_profile = 22;
+    string announceContent = 23 [deprecated=true];
+    string announceURI = 24 [deprecated=true];
+    string streamURI = 25;
+    int32 streamWidth = 26;
+    int32 streamHeight = 27;
+    bool is_official = 28; // only appeared when fun chat
+    ChatStatus status = 29;
+}
+
+message ChatSetting {
+    ChatRole announce_permit = 1 [deprecated=true];
+    ChatRole invite_permit = 2;
+    ChatRole stream_permit = 3;
+    ChatRole judge_permit = 4;
+    ChatRole pin_permit = 5;
+}
+
+message ServiceProfile {
+    string service_id = 1;
+}
+
+message ChatProfile {
+    int64 chat_id = 1 [jstype=JS_STRING];
+    ChatType type = 2;
+    string subject = 3;
+    string description = 4;
+    string photo_uri = 5;
+    string cover_photo_uri = 6;
+    string invite_link = 7;
+    int64 owner_id = 8 [jstype=JS_STRING];
+    GameInfo game_info = 10;
+    ChatProfileMetaData metadata = 11;
+    int32 participants_count = 12;
+    repeated int32 tags = 13;
+    int32 participants_limit = 15;
+    bool is_official = 16;
+    ChatStatus status = 17;
+    bool is_participant = 18;
+}
+
+message GameInfo {
+    string id = 1;
+    string name = 2;
+}
+
+// For UserChat
+message ChatMetaData {
+    int64 target_id = 1 [jstype=JS_STRING];
+    google.protobuf.DoubleValue latitude = 2;
+    google.protobuf.DoubleValue longitude = 3;
+    bool restricted = 4;
+    bool see_history = 5;
+    bool apply_questions = 7;
+    repeated string questions = 8;
+    bool admin_approval = 9;
+    int64 start_time = 10 [jstype=JS_STRING];
+    int64 end_time = 11 [jstype=JS_STRING];
+    repeated int64 speaker_ids = 12 [jstype=JS_STRING];
+}
+
+// For ChatProfile
+message ChatProfileMetaData {
+    repeated string questions = 1;
+    google.protobuf.DoubleValue latitude = 2;
+    google.protobuf.DoubleValue longitude = 3;
+    bool apply_questions = 4;
+    bool admin_approval = 5;
+    bool restricted = 6;
+    int64 start_time = 7 [jstype=JS_STRING];
+    int64 end_time = 8 [jstype=JS_STRING];
+    repeated int64 speaker_ids = 9 [jstype=JS_STRING];
+    int32 subscribed_count = 10;
+    bool is_subscribed = 11;
+}
+
+message UserChatPreference {
+    ChatRole role = 1;
+    bool pinned = 2;
+    bool mute = 3;
+    bool ad_block = 4;
+    int64 alias_id = 5 [jstype=JS_STRING];
+    bool favorite = 6;
+    int64 joined_time = 7 [jstype=JS_STRING];
+    bool has_suspects = 8;
+}
+
+// definition of event
+message MessageEvent {
+    repeated MessageEventItem message_event_items = 1;
+}
+
+message MessageEventItem {
+    MessageEventType message_event_type = 1;
+    int64 message_id = 2 [jstype=JS_STRING];
+    ChatMessage message = 3;
+    int64 chat_id = 4 [jstype=JS_STRING];
+    int64 event_created_time = 5 [jstype=JS_STRING];
+}
+
+message PinnedMessageEvent {
+    repeated PinnedMessageEventItem pinned_message_event_items = 1;
+}
+
+message PinnedMessageEventItem {
+    PinnedMessageEventType pinned_message_event_type = 1;
+    PinnedMessageType pinned_message_type = 2 [deprecated=true]; 
+    ChatMessage message = 3;
+    int64 message_id = 4 [jstype=JS_STRING];
+    int64 chat_id = 5 [jstype=JS_STRING];
+    int64 event_created_time = 6 [jstype=JS_STRING];
+    int64 sender_id = 7 [jstype=JS_STRING];
+}
+
+message ChatEvent {
+    repeated ChatEventItem chat_event_items = 1;
+}
+
+message ChatEventItem {
+    UserChat user_chat = 1;
+    int64 chat_id = 2 [jstype=JS_STRING];
+    int64 event_created_time = 3 [jstype=JS_STRING];
+    ChatEventType chat_event_type = 4;
+}
+
+message UserPreferenceEvent {
+    int64 user_id = 1 [jstype=JS_STRING];
+    int64 chat_id = 2 [jstype=JS_STRING];
+    int64 event_created_time = 3 [jstype=JS_STRING];
+}
+
+message UserEvent {
+    int64 alias_id = 1 [jstype=JS_STRING];
+    string nickname = 2;
+    string avatar = 3;
+    string email = 4;
+    string hashed_whole_phone = 5;
+    string custom_nickname = 6;
+    string phone_country_code = 7;
+}
+
+message AliasInfo {
+    int64 id = 1 [jstype=JS_STRING];
+    string nickname = 2;
+}
+
+message FriendEvent {
+    int64 alias_id = 1;
+    string nickname = 2;
+    string avatar = 3;
+    string email = 4;
+    string hashed_phone = 5;
+    FriendStatus friend_status = 6;
+    FriendType friend_type = 7;
+    string hashed_email = 8;
+    int64 be_friend_time = 9;
+    int32 mutual_friend_count = 10;
+    string phone_country_code = 11;
+}
+
+message AddScheduleMessageEvent {
+    int64 chat_id = 2 [jstype=JS_STRING];
+    int64 sender_id = 3 [jstype=JS_STRING];
+    int32 schedule_id = 4;
+    RawMessage message = 5;
+    ReplyMessage replyMessage = 6;
+    int64 schedule_time = 7 [jstype=JS_STRING];
+    int64 event_created_time = 8 [jstype=JS_STRING];
+}
+
+message DeleteScheduleMessageEvent {
+    int64 chat_id = 2 [jstype=JS_STRING];
+    int64 sender_id = 3 [jstype=JS_STRING];
+    repeated int32 schedule_ids = 4;
+    int64 event_created_time = 5 [jstype=JS_STRING];
+}
+
+message UnlockWhisperMessageEvent {
+    int64 chat_id = 1 [jstype=JS_STRING];
+    int64 user_id = 2 [jstype=JS_STRING];
+    repeated WhisperMessage whisperMessages = 3;
+}
+
+message WhisperMessage {
+    int64 message_id = 1 [jstype=JS_STRING];
+    int64 expired_time = 2 [jstype=JS_STRING];
+}
+
+message NotificationPayload {
+    string category = 1;
+    string subcategory = 2;
+    oneof to_oneof {
+        string to_open_id = 3;
+        int64 to_alias_id = 4 [jstype=JS_STRING];
+        bool to_all = 5;
+    }
+    string title = 6;
+    string subtitle = 7;
+    string body = 8;
+    string custom_data = 9; // json string format
+    string app_link = 10; // need to follow app's deep link rule
+    oneof from_oneof {
+        string from_service_id = 11;
+        int64 from_alias_id = 12 [jstype=JS_STRING];
+    }
+}
+
+message Notification {
+    int64 id = 1 [jstype=JS_STRING];
+    NotificationPayload payload = 2;
+    int64 created_time = 3 [jstype=JS_STRING];
+}
+
+message AddNotificationEvent {
+    Notification notification = 1;
+}
+
+message JollyBuyEvent {
+    int64 created_time = 1 [jstype=JS_STRING];
+}
+
+message StringableInt64Value {
+    int64 value = 1 [jstype=JS_STRING];
+}
+
+message LogoutEvent {
+    int64 alias_id = 1 [jstype=JS_STRING];
+    string new_token = 2;
+}
+
+message AliasDeletedEvent {
+    int64 deletedAliasID = 1 [jstype=JS_STRING];
+}

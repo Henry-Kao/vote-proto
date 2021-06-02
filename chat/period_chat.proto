@@ -1,0 +1,139 @@
+syntax = "proto3";
+
+package beanfun.chat.v1;
+option go_package = "./;beanfun_chat_v1";
+
+import "google/protobuf/wrappers.proto";
+import "google/protobuf/empty.proto";
+import "chatEntities.proto";
+
+// 限時豆陣聊相關服務
+service PeriodChatService {
+    rpc CreatePeriodChat(CreatePeriodChatCommand) returns (CreatePeriodChatResult) {}
+    rpc UpdatePeriodChat(UpdatePeriodChatCommand) returns (google.protobuf.Empty) {}
+    rpc GetPeriodChatsForPlatform(GetPeriodChatsForPlatformCommand) returns (GetPeriodChatsForPlatformResult) {}
+    rpc ApplyPeriodChat(ApplyPeriodChatCommand) returns (google.protobuf.Empty) {}
+    rpc AddPeriodChatSpeakers(AddPeriodChatSpeakersCommand) returns (AddPeriodChatSpeakersResult) {}
+    rpc DeletePeriodChatSpeakers(DeletePeriodChatSpeakersCommand) returns (DeletePeriodChatSpeakersResult) {}
+    rpc SubscribePeriodChatReminder(SubscribePeriodChatReminderCommand) returns (google.protobuf.Empty) {}
+}
+
+// 首頁顯示用的個人化 PeriodChat 
+message PeriodChat {
+    int64 chat_id = 1 [jstype=JS_STRING];
+    string subject = 2;
+    string description = 3;
+    string photo_uri = 4;
+    string cover_photo_uri = 5;
+    int32 participants_count = 6;
+    int32 participants_limit = 7;
+    int32 subscribed_count = 8;
+    bool is_participant = 9;
+    bool is_subscribed = 10;
+    int64 start_time = 11 [jstype=JS_STRING];
+    int64 end_time = 12 [jstype=JS_STRING];
+    repeated int64 speaker_ids = 13 [jstype=JS_STRING];
+    int32 status = 14;
+}
+
+message CreatePeriodChatCommand {
+    string subject = 1;
+    string description = 2;
+    string photo_uri = 3;
+    string cover_photo_uri = 4;
+    int64 alias_id = 5 [jstype=JS_STRING];
+    google.protobuf.StringValue service_id = 6;
+    google.protobuf.Int32Value participants_limit = 7;
+    int64 start_time = 8 [jstype=JS_STRING];
+    int64 end_time = 9 [jstype=JS_STRING];
+    ChatStatus status = 10;
+}
+
+message CreatePeriodChatResult {
+    int64 chat_id = 1 [jstype=JS_STRING];
+}
+
+message UpdatePeriodChatCommand {
+    google.protobuf.StringValue subject = 1;
+    google.protobuf.StringValue description = 2;
+    google.protobuf.StringValue photo_uri = 3;
+    google.protobuf.StringValue cover_photo_uri = 4;
+    int64 alias_id = 5 [jstype=JS_STRING];
+    int64 chat_id = 6 [jstype=JS_STRING];
+    google.protobuf.BoolValue see_history = 7;
+    google.protobuf.StringValue announce_content = 8 [deprecated=true]; 
+    google.protobuf.StringValue announce_uri = 9 [deprecated=true]; 
+    google.protobuf.StringValue stream_uri = 10;
+    google.protobuf.Int32Value stream_width = 11;
+    google.protobuf.Int32Value stream_height= 12;
+    ChatRole invite_permit = 13;
+    ChatRole stream_permit = 14;
+    ChatRole judge_permit = 15;
+    ChatRole pin_permit = 16;
+    google.protobuf.Int32Value participants_limit = 17;
+    google.protobuf.StringValue service_id = 18;
+    int64 start_time = 19 [jstype=JS_STRING];
+    int64 end_time = 20 [jstype=JS_STRING];
+    ChatStatus status = 21;
+}
+
+message PeriodChatForPlatform {
+    int64  chat_id                       = 1 [jstype=JS_STRING];
+    int64  owner_alias_id                = 2 [jstype=JS_STRING];
+    string subject                       = 3;
+    string description                   = 4; // 群組簡介與列表顯示的訊息
+    string photo_uri                     = 5;
+    string cover_phtot_uri               = 6;
+    int32  participants_limit            = 7;
+    int32  participants_count            = 8;
+    int32  subscribed_count              = 9; // 關注（有開啟 On Air 提醒）的人數
+    int64  start_time                    = 10 [jstype=JS_STRING]; // 開始時間 Unix timestamp
+    int64  end_time                      = 11 [jstype=JS_STRING]; // 結束時間 Unix timestamp
+    repeated int64 speaker_ids           = 12 [jstype=JS_STRING];
+    ChatStatus status                    = 13;
+    string service_id                    = 14;
+    int64 created_time                   = 15 [jstype=JS_STRING];
+    int64 modified_time                  = 16 [jstype=JS_STRING];
+}
+
+message GetPeriodChatsForPlatformCommand {
+    int64 owner_real_alias_id = 1 [jstype=JS_STRING];
+}
+
+message GetPeriodChatsForPlatformResult {
+    repeated PeriodChatForPlatform  period_chats = 1;
+}
+
+message ApplyPeriodChatCommand {
+    int64 real_alias_id = 1 [jstype=JS_STRING];
+    int64 chat_id       = 2 [jstype=JS_STRING];
+    int64 alias_id      = 3 [jstype=JS_STRING];
+}
+
+message AddPeriodChatSpeakersCommand {
+    int64 chat_id  = 1 [jstype=JS_STRING];
+    int64 alias_id = 2 [jstype=JS_STRING];
+    repeated int64 speaker_ids = 3 [jstype=JS_STRING];
+    int64 real_alias_id = 4 [jstype=JS_STRING];
+}
+
+message AddPeriodChatSpeakersResult {
+    repeated int64 failed_alias_ids = 1 [jstype=JS_STRING];
+}
+
+message DeletePeriodChatSpeakersCommand {
+    int64 chat_id  = 1 [jstype=JS_STRING];
+    int64 alias_id = 2 [jstype=JS_STRING];
+    repeated int64 speaker_ids = 3 [jstype=JS_STRING];
+    int64 real_alias_id = 4 [jstype=JS_STRING];
+}
+
+message DeletePeriodChatSpeakersResult {
+    repeated int64 failed_alias_ids = 1 [jstype=JS_STRING];
+}
+
+// App 訂閱提醒會給 Token
+message SubscribePeriodChatReminderCommand {
+    int64 chat_id  = 1 [jstype=JS_STRING];
+    int64 alias_id = 2 [jstype=JS_STRING];
+}

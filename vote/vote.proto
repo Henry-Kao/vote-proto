@@ -1,0 +1,160 @@
+syntax = "proto3";
+
+package beanfun.vote.v1;                         //package name
+option go_package = "./;beanfun_vote_v1";        //package 位置
+
+import "vote_entities.proto";
+
+// 服務-使用者投票
+service VoteService {
+  // 方法-投票列表
+  // (10.1 投票列表頁)
+  rpc GetVoteList (GetVoteListCommand) returns (GetVoteListResult) {}
+
+  // 方法-取得投票
+  // (10.2 建立投票-編輯投票(顯示資料))
+  // (10.3 投票(顯示資料))
+  rpc GetVoteData (GetVoteDataCommand) returns (GetVoteDataResult) {} 
+
+  // 方法-投票
+  // (10.3 投票)
+  rpc Vote (VoteCommand) returns (MessageResult) {}
+
+  // 方法-投票結果
+  // (10.4.1 投票結果)
+  rpc GetVoteResult (GetVoteResultCommand) returns (GetVoteResultResult) {}
+
+  // 方法-取得群組內所有人投票狀態 (置頂、PK Bar)
+  // (2.3 公告樣式-投票-一般模式)
+  // (2.3 公告樣式-投票-PK模式)
+  rpc GetLatestVote (GetLatestVoteCommand) returns (GetLatestVoteResult) {}
+
+  // 方法-取得使用者針對該主題是否已經投過票
+  // (2.3 公告樣式-互動式訊息)
+  // 使用者點擊互動式訊息後，會開啟投票頁面，投票頁面要呼叫此服務判斷是否該使用者已投票，若已投票則轉至投票結果頁
+  rpc GetIsVoted (GetIsVotedCommand) returns (GetIsVotedResult) {}
+}
+
+// Message Type-GetVoteList 傳入格式
+message GetVoteListCommand {
+  int64 chat_id = 1 [jstype=JS_STRING];         // 聊天室id
+  int64 alias_id = 2 [jstype=JS_STRING];        // 使用者id (用來判斷按鈕顯示狀態)
+}        
+        
+// Message Type-GetVoteList 回傳格式        
+message GetVoteListResult {        
+  repeated subject subject_list = 1;        
+  message subject {        
+    int64 subject_id = 1 [jstype=JS_STRING];        // 主題id (subject.subject_id)
+    string title = 2;                               // 主題內容
+    bool is_active = 3;                             // 是否開啟 (subject.is_active)
+    int64 vote_people_count = 4 [jstype=JS_STRING]; // 參與投票人數 (後端計算)
+    int32 due_days = 5;                             // 投票剩餘天數 (後端計算)
+    bool is_voted = 6;                              // 是否已投票 (!is_voted && !is_ended => 顯示『馬上投票』; is_voted && !is_ended => 顯示『已投票』)
+    bool is_ended = 7;                              // 是否已結束 (is_ended => 顯示『看結果』/ 切換切換『全部』/『進行中』/『已結束』頁籤用)
+  }        
+}        
+        
+// Message Type-GetVoteData 傳入格式
+message GetVoteDataCommand {        
+  int64 subject_id = 1 [jstype=JS_STRING];      // 主題id (subject.subject_id)
+}        
+         
+// Message Type-GetVoteData 回傳格式
+message GetVoteDataResult {        
+  // [table] subject        
+  int64 subject_id = 1 [jstype=JS_STRING];      // 投票 key
+  string title = 2;                             // 投票主題 (聊天室: subject.title == question.title; 時事評論家: subject.title)
+  string image_uri = 3;                         // 投票 Banner 圖片路徑 (subject.image_uri) >> 上傳格式為 base64，但存入資料庫格式為 url 字串
+  string description = 4;                       // 投票說明 (subject.description)
+  SubjectType type = 5;                         // 投票類型 (subject.type)
+  bool is_active = 6;                           // 是否開啟 (subject.is_active)
+  bool is_pinned = 7;                           // 置頂公告 (subject.is_pinned) (新增欄位 2021/05/14)
+  int64 start_time = 8 [jstype=JS_STRING];      // 開放時間 (subject.start_time)
+  int64 end_time = 9 [jstype=JS_STRING];        // 結束時間 (subject.end_time)
+  int64 chat_id = 10 [jstype=JS_STRING];        // 聊天室id (subject.chat_id)
+  int32 version = 11;                           // 版本 (subject.version)
+  int64 created_time = 12 [jstype=JS_STRING];   // 建立時間 (subject.created_time)
+  int64 created_user = 13 [jstype=JS_STRING];   // 建立人員 (subject.created_user)
+  string created_user_name = 14;                // 建立人員名稱
+  int64 modified_time = 15 [jstype=JS_STRING];  // 修改時間 (subject.modified_time)
+  int64 modified_user = 16 [jstype=JS_STRING];  // 修改人員 (subject.modified_user)
+  repeated Question question_list = 17;         // 陣列-repeated(陣列) Question(型別)
+}
+
+// Message Type-Vote 傳入格式
+message VoteCommand {
+  int64 alias_id = 1 [jstype=JS_STRING];         // 使用者id
+  int64 subject_id = 2 [jstype=JS_STRING];       // 投票 key
+  int32 version = 3;                             // 版本號 (檢查用)
+  repeated QuestionAndAnswers question_list = 4; // 題目 + 所選的答案們(可能複選)
+
+  // 題目 + 所選的答案們(可能複選)
+  message QuestionAndAnswers {
+    int32 question_id = 1;                       // 題目編號
+    repeated int32 option_id_check_list = 2;     // 答案編號(陣列)
+  }
+}
+
+// Message Type-GetVoteResult 傳入格式
+message GetVoteResultCommand {
+  int64 alias_id = 1 [jstype=JS_STRING];        // 使用者id (判斷是否已投票)
+  int64 subject_id = 2 [jstype=JS_STRING];      // 投票 key
+}
+
+// Message Type-GetVoteResult 回傳格式
+message GetVoteResultResult {
+  // [table] subject
+  int64 subject_id = 1 [jstype=JS_STRING];         // 投票 key
+  string title = 2;                                // 投票主題 (聊天室: subject.title == question.title; 時事評論家: subject.title)
+  string image_uri = 3;                            // 投票 Banner 圖片路徑 (subject.image_uri) >> 上傳格式為 base64，但存入資料庫格式為 url 字串
+  string description = 4;                          // 投票說明 (subject.description)
+  SubjectType type = 5;                            // 投票類型 (subject.type)
+  bool is_active = 6;                              // 是否開啟 (subject.is_active)
+  bool is_pinned = 7;                              // 置頂公告 (subject.is_pinned) (新增欄位 2021/05/14)
+  int64 start_time = 8 [jstype=JS_STRING];         // 開放時間 (subject.start_time)
+  int64 end_time = 9 [jstype=JS_STRING];           // 結束時間 (subject.end_time)
+  int64 chat_id = 10 [jstype=JS_STRING];           // 聊天室id (subject.chat_id)
+  int32 version = 11;                              // 版本 (subject.version)
+  int64 created_time = 12 [jstype=JS_STRING];      // 建立時間 (subject.created_time)
+  int64 created_user = 13 [jstype=JS_STRING];      // 建立人員 (subject.created_user)
+  string created_user_name = 14;                   // 建立人員名稱
+  int64 modified_time = 15 [jstype=JS_STRING];     // 修改時間 (subject.modified_time)
+  int64 modified_user = 16 [jstype=JS_STRING];     // 修改人員 (subject.modified_user)
+  repeated Question question_list = 17;            // 陣列-repeated(陣列) Question(型別)
+  int64 vote_people_count = 18 [jstype=JS_STRING]; // 參與投票人數 (後端計算)
+  int32 due_days = 19;                             // 投票剩餘天數 (後端計算)
+  bool is_voted = 20;                              // 是否已投票 (!is_voted && !is_ended => 顯示『馬上投票』; is_voted && !is_ended => 顯示『已投票』)
+  bool is_ended = 21;                              // 是否已結束 (is_ended => 顯示『看結果』/ 切換切換『全部』/『進行中』/『已結束』頁籤用)
+}
+
+// Message Type-GetLatestVote 傳入格式
+message GetLatestVoteCommand {
+  int64 chat_id = 1 [jstype=JS_STRING];         // 聊天室id
+  int64 alias_id = 2 [jstype=JS_STRING];        // 使用者id (判斷是否已投票)
+  int32 mode = 3;                               // 題目模式 (0:全部最新 / 1:PK最新 / 2:一般最新)
+  // (判斷最新時 => 判斷 modify time):
+  // 置頂公告：只會顯示最新一則投票活動在聊天室的公告(可能是PK或一般投票)
+  // 最新一則的定義 - 只要投票創建者對投票進行任何異動，即是更新，就會被顯示在聊天室內的公吿
+}
+
+// Message Type-GetLatestVote 回傳格式
+message GetLatestVoteResult {
+  int64 subject_id = 1 [jstype=JS_STRING];      // 投票 key (PK模式一定只有一題，且PK Bar只要顯示結果，所以就不處理 Question 陣列了)
+  string title = 2;                             // 投票主題
+  int32 mode = 3;                               // 題目模式 (1:PK / 2:一般)
+  bool is_voted = 4;                            // 是否已投票
+  repeated Option option_list = 5;              // 選項與結果
+  string action = 6;                            // 畫面上顯示的文字
+}
+
+// Message Type-GetIsVoted 傳入格式
+message GetIsVotedCommand {
+  int64 subject_id = 1 [jstype=JS_STRING];      // 主題id (subject.subject_id)
+  int64 alias_id = 2 [jstype=JS_STRING];        // 使用者id
+}
+
+// Message Type-GetIsVoted 回傳格式
+message GetIsVotedResult {
+  bool is_voted = 1;                            // 是否已投票
+}
