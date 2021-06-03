@@ -3,11 +3,6 @@ syntax = "proto3";
 package beanfun.vote.v1;                      //package name
 option go_package = "./vote;beanfun_vote_v1"; //package 位置
 
-// Message Type-泛用回傳訊息格式
-message MessageResult {
-  string msg = 1;
-}
-
 // [table] question
 message Question {
     int32 question_id = 1;           // 題目編號(後端產生)

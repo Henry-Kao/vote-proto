@@ -3,6 +3,7 @@ syntax = "proto3";
 package beanfun.vote.v1;                      //package name
 option go_package = "./vote;beanfun_vote_v1"; //package 位置
 
+import "google/protobuf/empty.proto";
 import "vote_entities.proto";
 
 // 服務-使用者投票
@@ -18,7 +19,7 @@ service VoteService {
 
   // 方法-投票
   // (10.3 投票)
-  rpc Vote (VoteCommand) returns (MessageResult) {}
+  rpc Vote (VoteCommand) returns (google.protobuf.Empty) {}
 
   // 方法-投票結果
   // (10.4.1 投票結果)

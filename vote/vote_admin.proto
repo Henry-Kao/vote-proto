@@ -13,15 +13,15 @@ service VoteAdminService {
 
   // 方法-建立投票
   // (10.2 建立投票)
-  rpc CreateVote (CreateVoteCommand) returns (MessageResult) {}
+  rpc CreateVote (CreateVoteCommand) returns (google.protobuf.Empty) {}
 
   // 方法-編輯投票
   // (10.2 建立投票-編輯投票)
-  rpc EditVote (EditVoteCommand) returns (MessageResult) {}
+  rpc EditVote (EditVoteCommand) returns (google.protobuf.Empty) {}
 
   // 方法-刪除投票
   // (10.3 投票頁面-選擇編輯/刪除/結束投票)
-  rpc DeleteVote (DeleteVoteCommand) returns (MessageResult) {}
+  rpc DeleteVote (DeleteVoteCommand) returns (google.protobuf.Empty) {}
 }
 
 // Message Type-IsActive 回傳格式
