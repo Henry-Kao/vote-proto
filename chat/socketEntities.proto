@@ -3,7 +3,7 @@ syntax = "proto3";
 package beanfun.chat.v1;
 option go_package = "./;beanfun_chat_v1";
 
-import "chatEntities.proto";
+import "chat/chatEntities.proto";
 
 // login packet
 message LoginPacket {

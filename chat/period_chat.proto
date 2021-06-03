@@ -5,7 +5,7 @@ option go_package = "./;beanfun_chat_v1";
 
 import "google/protobuf/wrappers.proto";
 import "google/protobuf/empty.proto";
-import "chatEntities.proto";
+import "chat/chatEntities.proto";
 
 // 限時豆陣聊相關服務
 service PeriodChatService {

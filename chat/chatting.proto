@@ -5,8 +5,8 @@ option go_package = "./;beanfun_chat_v1";
 
 import "google/protobuf/empty.proto";
 import "google/protobuf/wrappers.proto";
-import "chatEntities.proto";
-import "period_chat.proto";
+import "chat/chatEntities.proto";
+import "chat/period_chat.proto";
 
 service MessageService {
     rpc SendMessage(SendMessageCommand) returns (SendMessageResult) {}

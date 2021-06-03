@@ -1,10 +1,10 @@
 syntax = "proto3";
 
-package beanfun.vote.v1;                      //package name
-option go_package = "./vote;beanfun_vote_v1"; //package 位置
+package beanfun.vote.v1;                  //package name
+option go_package = "./;beanfun_vote_v1"; //package 位置
 
 import "google/protobuf/empty.proto";
-import "vote_entities.proto";
+import "vote/vote_entities.proto";
 
 // 服務-使用者投票
 service VoteService {
