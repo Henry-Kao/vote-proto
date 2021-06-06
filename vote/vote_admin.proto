@@ -23,6 +23,10 @@ service VoteAdminService {
   // (10.3 投票頁面-選擇編輯/刪除/結束投票)
   rpc DeleteVote (DeleteVoteCommand) returns (google.protobuf.Empty) {}
 
+  // 方法-結束投票
+  // (10.3 投票頁面-選擇編輯/刪除/結束投票)
+  rpc EndVote (EndVoteCommand) returns (google.protobuf.Empty) {}
+
   // 方法-上傳單檔
   // (Azure Storage Blob)
   rpc UploadFile (UploadFileCommand) returns (UploadFileResult) {}
@@ -42,24 +46,24 @@ service VoteAdminService {
 
 // Message Type-IsActive 回傳格式
 message IsActiveResult {
-  bool is_active = 1;                   // 是否開啟
+  bool is_active = 1;                          // 是否開啟
 }
 
 // Message Type-CreateVote 傳入格式
 message CreateVoteCommand {
   // [table] subject
-  string title = 1;                           // 投票主題 (聊天室: subject.title == question.title; 時事評論家: subject.title)
-  string image_uri = 2;                       // 投票 Banner 圖片路徑 (subject.image_uri) >> 上傳格式為 base64，但存入資料庫格式為 url 字串
-  string description = 3;                     // 投票說明 (subject.description)
-  SubjectType type = 4;                       // 投票類型 (subject.type)
-  bool is_active = 5;                         // 是否開啟 (subject.is_active)
-  bool is_pinned = 6;                         // 置頂公告 (subject.is_pinned) (新增欄位 2021/05/14)
-  int64 start_time = 7 [jstype=JS_STRING];    // 開放時間 (subject.start_time)
-  int64 end_time = 8 [jstype=JS_STRING];      // 結束時間 (subject.end_time)
-  int64 chat_id = 9 [jstype=JS_STRING];       // 聊天室id (subject.chat_id)
-  int32 version = 10;                         // 版本 (subject.version)
-  int64 created_user = 11 [jstype=JS_STRING]; // 建立人員 (subject.created_user)
-  repeated Question question_list = 12;       // 陣列-repeated(陣列) Question(型別)
+  string title = 1;                            // 投票主題 (聊天室: subject.title == question.title; 時事評論家: subject.title)
+  string image_uri = 2;                        // 投票 Banner 圖片路徑 (subject.image_uri) >> 上傳格式為 base64，但存入資料庫格式為 url 字串
+  string description = 3;                      // 投票說明 (subject.description)
+  SubjectType type = 4;                        // 投票類型 (subject.type)
+  bool is_active = 5;                          // 是否開啟 (subject.is_active)
+  bool is_pinned = 6;                          // 置頂公告 (subject.is_pinned) (新增欄位 2021/05/14)
+  int64 start_time = 7 [jstype=JS_STRING];     // 開放時間 (subject.start_time)
+  int64 end_time = 8 [jstype=JS_STRING];       // 結束時間 (subject.end_time)
+  int64 chat_id = 9 [jstype=JS_STRING];        // 聊天室id (subject.chat_id)
+  int32 version = 10;                          // 版本 (subject.version)
+  int64 created_user = 11 [jstype=JS_STRING];  // 建立人員 (subject.created_user)
+  repeated Question question_list = 12;        // 陣列-repeated(陣列) Question(型別)
 
   //int64 subject_id = 1;     // 投票 key >> 後端 auto increment
   //int64 created_time = 10;  // 建立時間 >> 後端產生
@@ -93,25 +97,31 @@ message DeleteVoteCommand {
   int64 modified_user = 2 [jstype=JS_STRING];  // 修改人員
 }
 
+// Message Type-EndVote 傳入格式
+message EndVoteCommand {
+  int64 subject_id = 1 [jstype=JS_STRING];     // 投票 key
+  int64 modified_user = 2 [jstype=JS_STRING];  // 修改人員
+}
+
 // Message Type-UploadFile 傳入格式
 message UploadFileCommand {
-  string folder_name = 1; // 資料夾名稱
-  string file_name = 2;   // 檔案名稱
-  bytes  file_bytes = 3;  // 檔案 Bytes
+  string folder_name = 1;                      // 資料夾名稱
+  string file_name = 2;                        // 檔案名稱
+  bytes  file_bytes = 3;                       // 檔案 Bytes
 }
 
 // Message Type-UploadFile 回傳格式
 message UploadFileResult {
-  string uri = 1;         // Azure Storage Blob 回傳的 URI
+  string uri = 1;                              // Azure Storage Blob 回傳的 URI
 }
 
 // Message Type-DeleteFiles 傳入格式
 message DeleteFilesCommand {
-  string folder_name = 1;             // 資料夾名稱
-  repeated string file_name_list = 2; // 欲刪除的檔案名稱集合
+  string folder_name = 1;                      // 資料夾名稱
+  repeated string file_name_list = 2;          // 欲刪除的檔案名稱集合
 }
 
 // Message Type-EndVoteCronJob 傳入格式
 message EndVoteCronJobCommand {
-  int64 execute_time = 1 [jstype=JS_STRING]; // 取得 end_time 為此 timestamp 的 subject，發送互動式訊息 (傳入 0 時，execute_time 為當下時間)
+  int64 execute_time = 1 [jstype=JS_STRING];   // 取得 end_time 為此 timestamp 的 subject，發送互動式訊息 (傳入 0 時，execute_time 為當下時間)
 }
