@@ -147,6 +147,7 @@ message GetLatestVoteResult {
   bool is_voted = 4;                            // 是否已投票
   repeated Option option_list = 5;              // 選項與結果
   string action = 6;                            // 畫面上顯示的文字
+  int64 modified_time = 7 [jstype=JS_STRING];   // 最新一筆的更新時間
 }
 
 // Message Type-GetIsVoted 傳入格式

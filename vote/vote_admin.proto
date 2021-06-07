@@ -35,10 +35,6 @@ service VoteAdminService {
   // (Azure Storage Blob)
   rpc DeleteFiles (DeleteFilesCommand) returns (google.protobuf.Empty) {}
 
-  // 方法-刪除暫存檔
-  // (Azure Storage Blob)
-  rpc DeleteUnusedFiles (google.protobuf.Empty) returns (google.protobuf.Empty) {}
-
   // 方法-結束投票發送互動式訊息至聊天室
   // (排程作業，每 5 分鐘執行一次)
   rpc EndVoteCronJob (EndVoteCronJobCommand) returns (google.protobuf.Empty) {}
