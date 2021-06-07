@@ -37,7 +37,7 @@ service VoteAdminService {
 
   // 方法-結束投票發送互動式訊息至聊天室
   // (排程作業，每 5 分鐘執行一次)
-  rpc EndVoteCronJob (EndVoteCronJobCommand) returns (google.protobuf.Empty) {}
+  rpc EndVoteCronJob (google.protobuf.Empty) returns (google.protobuf.Empty) {}
 }
 
 // Message Type-IsActive 回傳格式
@@ -115,9 +115,4 @@ message UploadFileResult {
 message DeleteFilesCommand {
   string folder_name = 1;                      // 資料夾名稱
   repeated string file_name_list = 2;          // 欲刪除的檔案名稱集合
-}
-
-// Message Type-EndVoteCronJob 傳入格式
-message EndVoteCronJobCommand {
-  int64 execute_time = 1 [jstype=JS_STRING];   // 取得 end_time 為此 timestamp 的 subject，發送互動式訊息 (傳入 0 時，execute_time 為當下時間)
 }
