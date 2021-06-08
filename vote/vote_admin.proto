@@ -11,6 +11,9 @@ service VoteAdminService {
   // 方法-APP內是否啟用投票功能
   rpc IsActive(google.protobuf.Empty) returns (IsActiveResult) {}
 
+  // 方法-取 SubjectId 編號
+  rpc GetNewSubjectId(google.protobuf.Empty) returns (GetNewSubjectIdResult) {}
+
   // 方法-建立投票
   // (10.2 建立投票)
   rpc CreateVote (CreateVoteCommand) returns (google.protobuf.Empty) {}
@@ -45,27 +48,31 @@ message IsActiveResult {
   bool is_active = 1;                          // 是否開啟
 }
 
+// Message Type-GetNewSubjectId 回傳格式
+message GetNewSubjectIdResult {
+  int64 subject_id = 1 [jstype=JS_STRING];     // 投票 key
+}
+
 // Message Type-CreateVote 傳入格式
 message CreateVoteCommand {
   // [table] subject
-  string title = 1;                            // 投票主題 (聊天室: subject.title == question.title; 時事評論家: subject.title)
-  string image_uri = 2;                        // 投票 Banner 圖片路徑 (subject.image_uri) >> 上傳格式為 base64，但存入資料庫格式為 url 字串
-  string description = 3;                      // 投票說明 (subject.description)
-  SubjectType type = 4;                        // 投票類型 (subject.type)
-  bool is_active = 5;                          // 是否開啟 (subject.is_active)
-  bool is_pinned = 6;                          // 置頂公告 (subject.is_pinned) (新增欄位 2021/05/14)
-  int64 start_time = 7 [jstype=JS_STRING];     // 開放時間 (subject.start_time)
-  int64 end_time = 8 [jstype=JS_STRING];       // 結束時間 (subject.end_time)
-  int64 chat_id = 9 [jstype=JS_STRING];        // 聊天室id (subject.chat_id)
-  int32 version = 10;                          // 版本 (subject.version)
-  int64 created_user = 11 [jstype=JS_STRING];  // 建立人員 (subject.created_user)
-  repeated Question question_list = 12;        // 陣列-repeated(陣列) Question(型別)
+  int64 subject_id = 1 [jstype=JS_STRING];     // 投票 key
+  string title = 2;                            // 投票主題 (聊天室: subject.title == question.title; 時事評論家: subject.title)
+  string image_uri = 3;                        // 投票 Banner 圖片路徑 (subject.image_uri) >> 上傳格式為 base64，但存入資料庫格式為 url 字串
+  string description = 4;                      // 投票說明 (subject.description)
+  SubjectType type = 5;                        // 投票類型 (subject.type)
+  bool is_active = 6;                          // 是否開啟 (subject.is_active)
+  bool is_pinned = 7;                          // 置頂公告 (subject.is_pinned) (新增欄位 2021/05/14)
+  int64 start_time = 8 [jstype=JS_STRING];     // 開放時間 (subject.start_time)
+  int64 end_time = 9 [jstype=JS_STRING];       // 結束時間 (subject.end_time)
+  int64 chat_id = 10 [jstype=JS_STRING];       // 聊天室id (subject.chat_id)
+  int32 version = 11;                          // 版本 (subject.version)
+  int64 created_user = 12 [jstype=JS_STRING];  // 建立人員 (subject.created_user)
+  repeated Question question_list = 13;        // 陣列-repeated(陣列) Question(型別)
 
-  //int64 subject_id = 1;     // 投票 key >> 後端 auto increment
   //int64 created_time = 10;  // 建立時間 >> 後端產生
   //int64 modified_user = 11; // 修改人員 >> 自動帶入 created_user
   //int64 modified_time = 12; // 修改時間 >> 自動帶入
-  //int64 chat_end_time = 13; // 聊天室結束時間 >> 前端過濾
 }
 
 // Message Type-EditVote 傳入格式
